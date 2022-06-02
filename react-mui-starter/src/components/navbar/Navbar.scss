@@ -1,0 +1,18 @@
+#navbar
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+
+    position: absolute;
+    width: 1440px;
+    height: 60px;
+    left: 0px;
+    top: 0px;
+
+    background: #FFFFFF;
+    box-shadow: 0px 1px 1px rgba(33, 43, 54, 0.25);
+}

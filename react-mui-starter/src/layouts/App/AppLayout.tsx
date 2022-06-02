@@ -3,7 +3,7 @@ import { Router, Switch } from "react-router-dom";
 import { routes } from "../../routes/routes.config";
 import history from "../../routes/history";
 import Routes from "../../routes/routes";
-import { Navbar } from "../../components/navbar";
+import {Navbar} from "../../components/navbar";
 import { authenticationService } from "../../utils/auth.service";
 
 export default function AppLayout(props: any) {

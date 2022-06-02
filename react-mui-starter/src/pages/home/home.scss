@@ -1,0 +1,31 @@
+#postCard
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 8px 0px 0px;
+
+    width: 508px;
+    height: 700px;
+
+    background: #FFFFFF;
+    box-shadow: 1px 1px 7px 3px rgba(33, 43, 54, 0.25);
+    border-radius: 8px;
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+
+#likeIcon,#commentIcon,#bookmarkIcon
+{
+    color: black;
+}
+#likeIcon:hover,#commentIcon:hover,#bookmarkIcon:hover
+{
+    color:grey;
+}

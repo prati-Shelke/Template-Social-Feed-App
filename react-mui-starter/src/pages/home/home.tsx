@@ -4,7 +4,7 @@ import './home.scss'
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Card } from '@mui/material';
-import { get } from '../../utils/http/httpMethods';
+import { get,put } from '../../utils/http/httpMethods';
 import { Skeleton } from '@mui/material';
 import { CardMedia,CardContent,CardActions } from '@mui/material';
 import FavoriteIcon from "@mui/icons-material/Favorite"
@@ -18,6 +18,9 @@ import { CardHeader } from '@mui/material';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import moment from 'moment';
+import Picker from 'emoji-picker-react';
+import { InputAdornment } from '@mui/material';
 
 function Home() 
 {
@@ -26,13 +29,12 @@ function Home()
     const [AllUsers,setAllUsers] = useState([])
     const [loading, setLoading] = useState(true);
     const [expanded, setExpanded] = useState(false);
-    
+    const [CurrentUser,setCurrentUser] = useState((JSON.parse(localStorage.getItem('currentUser') as any))||{})
+    const [showPicker, setShowPicker] = useState(false)
 
-    useEffect(() => 
-    {
-        const fetchPost = async() =>
+    const fetchPost = async() =>
         {
-            return get("http://localhost:8080/posts/getPosts?sortBy=desc&limit=5&page=1")
+            return get("http://localhost:8080/posts/getPosts?sortBy=desc&limit=200&page=1")
             .then((res:any)=>
                     {   
                         setAllPosts(res.results)
@@ -42,6 +44,8 @@ function Home()
             )
         }
 
+    useEffect(() => 
+    {
         const fetchUser = async() =>
         {
             return get("http://localhost:8080/users")
@@ -57,10 +61,20 @@ function Home()
         fetchUser()
     }, [])
 
-    // const handleExpandClick = () => 
-    // {
-    //     setExpanded(!expanded);
-    // }
+    
+ 
+    const onEmojiClick = (event:React.MouseEvent< Element,MouseEvent>, emojiObject:any) =>
+    {
+        
+        setShowPicker(false);
+    }
+
+    const handleLikes = async (postId:any) => 
+    {
+        const res = await put(`http://localhost:8080/posts/likes/${postId}`);
+        fetchPost()
+        console.log(res)
+    }
     
     console.log(AllUsers,AllPosts)
     return (
@@ -83,7 +97,7 @@ function Home()
                             }
                             title={user.name}
                             subheader="September 14, 2016"
-                            sx={{marginTop:'-80px'}}
+                            sx={{marginTop:'-10px'}}
                         />)
                     )}
                     <CardMedia
@@ -96,8 +110,8 @@ function Home()
 
                     <CardActions disableSpacing>
 
-                        <IconButton aria-label="add to favorites">
-                            <FavoriteBorderIcon id='likeIcon'></FavoriteBorderIcon>
+                        <IconButton aria-label="add to favorites" onClick={()=>handleLikes(post._id)} >
+                            <FavoriteIcon sx={post.likes.includes(CurrentUser._id)? { fill: "red" }: { color: "" }}></FavoriteIcon>
                         </IconButton>
 
                         <IconButton aria-label="share">
@@ -110,13 +124,50 @@ function Home()
 
                     </CardActions>
 
-                    <Collapse in={expanded} timeout="auto" unmountOnExit>
-                        <CardContent>
+                        <div style={post.likes.length!=0 ? {display:'block',paddingLeft:'10px',marginTop:'-10px',fontSize:'14px'} : {display:'none'}}> 
+                            {post.likes.length} like
+                        </div>
 
-                            
+                    <CardActions sx={{marginTop:'-15px'}}>
+                            {AllUsers && AllUsers.map((user:any) =>
+                            user._id === post.createdBy &&
+                            (
+                                <div key={user._id} style={{display:'flex'}}>
+                                    <p style={{fontSize:'14px',fontWeight:600}}> {user.name} :  </p> &nbsp;
+                                    <p style={{fontSize:'14px',fontWeight:400}}> {post.caption}</p>
+                                </div>
+                            ))}
+                    </CardActions>
 
-                        </CardContent>
-                    </Collapse>
+                    <CardActions>
+                        {post.comments.length!==0 ?  
+                        <Typography sx={{fontSize:'14px',fontWeight:400,marginTop:'-35px',color: "#919EAB",cursor:'pointer'}}>
+                            View all {post.comments.length} comments
+                        </Typography>
+                        :
+                        <Typography sx={{fontSize:'14px',fontWeight:400,marginTop:'-35px',color: "#919EAB",cursor:'pointer'}}>
+                            No comments yet...
+                        </Typography>
+                        }
+                    </CardActions>
+
+                    <CardActions>
+                        <Typography sx={{fontSize:'12px',fontWeight:400,marginTop:'-28px',color: "#637381",cursor:'pointer'}}>
+                            {moment(post.createdAt).fromNow()}
+                        </Typography>
+                    </CardActions>
+                       
+                    <CardActions className="picker-container" sx={{marginTop:'-10px',width:'300px'}}>
+                        <img className="emoji-icon" style={{height:'20px',color: "#000000"}} src="https://icons.getbootstrap.com/assets/icons/emoji-smile.svg" onClick={() => setShowPicker((val) => !val)}/>
+                            {showPicker && (
+                                <Picker
+                                    pickerStyle={{position:'absolute',top:"50px",left:'30px',width:'450px',height:'200px',marginBottom:'20px' }}
+                                    onEmojiClick={onEmojiClick}
+                                />
+                            )}
+                        <TextField sx={{paddingLeft:'10px',width:'560px'}} InputProps={{disableUnderline: true}} id="standard-basic" placeholder="Add a comment...." variant="standard"/>
+                     
+                    </CardActions>
 
                 </Card>
             )}

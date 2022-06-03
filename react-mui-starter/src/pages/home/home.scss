@@ -5,9 +5,9 @@
     justify-content: center;
     align-items: flex-start;
     padding: 8px 0px 0px;
-
+    font-family:'Public sans';
     width: 508px;
-    height: 700px;
+    height: 708px;
 
     background: #FFFFFF;
     box-shadow: 1px 1px 7px 3px rgba(33, 43, 54, 0.25);
@@ -29,3 +29,16 @@
 {
     color:grey;
 }
+
+.picker-container 
+{
+    position: relative;
+    width: 300px;
+}
+ 
+.emoji-icon 
+{
+    cursor: pointer;
+    
+}
+ 

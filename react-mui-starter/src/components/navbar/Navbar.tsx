@@ -26,7 +26,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
 {
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [CurrentUser,setCurrentUser] = useState(JSON.parse(localStorage.getItem('currentUser'))||{})
+    const [CurrentUser,setCurrentUser] = useState((JSON.parse(localStorage.getItem('currentUser') as any))||{})
 
    
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => 
@@ -44,7 +44,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
             <AppBar color='transparent' position="static" >
                 <Toolbar>
 
-                <div style={{marginLeft:'150px'}}>
+                <div style={{marginLeft:'150px',fontFamily:'Public sans'}}>
                     <img src={logo} style={{width: '25px',height: "25px",float:'left'}}/> &nbsp;
 
                     <a style={{fontSize:'20px',fontWeight:600}}>
@@ -52,7 +52,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                     </a>
                 </div>
             
-                <Box sx={{flexGrow:1}}></Box>
+                <Box sx={{flexGrow:1,fontFamily:'Public sans'}}></Box>
                     <div style={{display:"flex",marginRight:'180px'}}>
                         <IconButton edge="start" color="inherit" aria-label="menu" >
                             <HomeIcon ></HomeIcon>
@@ -73,7 +73,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                                 src={`http://192.168.0.22:8080/${CurrentUser.profileImg}`}
                             > </Avatar>
                             
-                            <a style={{paddingLeft:'4px',fontSize:'18px',fontWeight:600}}>{CurrentUser.name}</a>
+                            <a style={{paddingLeft:'4px',fontSize:'18px',fontWeight:600,fontFamily:'Public sans'}}>{CurrentUser.name}</a>
                         </div>
 
                         <Menu id="menu-appbar" anchorEl={anchorEl} anchorOrigin={{vertical: 'top',horizontal: 'right',}}

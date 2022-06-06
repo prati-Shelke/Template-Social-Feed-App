@@ -69,7 +69,7 @@ const googleLogin = catchAsync(async (req, res) =>
 const forgotPassword = catchAsync(async (req, res) => {
   const resetPasswordToken = await tokenService.generateResetPasswordToken(req.body.email);
   await emailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
-  res.status(httpStatus.NO_CONTENT).send({message:"email is sent"});
+  res.status(200).send({token:resetPasswordToken});
 });
 
 const resetPassword = catchAsync(async (req, res) => {

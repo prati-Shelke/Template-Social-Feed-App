@@ -14,6 +14,8 @@ import { MenuItem } from '@mui/material';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import EditProfile from './EditProfile';
+import { Divider } from '@mui/material';
 
 export type NavbarProps = {
   /**
@@ -27,7 +29,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [CurrentUser,setCurrentUser] = useState((JSON.parse(localStorage.getItem('currentUser') as any))||{})
-
+    let [EditProfileOpen,setEditProfileOpen] = useState(false)
    
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => 
     {
@@ -38,6 +40,14 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
     {
         setAnchorEl(null);
     }
+
+    const handleEditProfileClose = () =>
+    {
+        // e.stopPropagation()
+        setEditProfileOpen(false)
+        // window.location.reload()
+    }
+    
     
     return (
         <Box >
@@ -66,27 +76,56 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                             <BookmarkBorderOutlinedIcon ></BookmarkBorderOutlinedIcon>
                         </IconButton>&nbsp;
 
-                        <div style={{display:'flex',alignItems:'center',cursor:'pointer'}} onClick={handleMenu}>
+                        <div style={{display:'flex',alignItems:'center',cursor:'pointer'}} >
                             <Avatar 
                                 sx={{width: "28px",height: "28px"}}
-                                alt="user"
+                                onClick={handleMenu}
                                 src={`http://192.168.0.22:8080/${CurrentUser.profileImg}`}
                             > </Avatar>
                             
                             <a style={{paddingLeft:'4px',fontSize:'18px',fontWeight:600,fontFamily:'Public sans'}}>{CurrentUser.name}</a>
                         </div>
 
-                        <Menu id="menu-appbar" anchorEl={anchorEl} anchorOrigin={{vertical: 'top',horizontal: 'right',}}
-                                keepMounted
-                                transformOrigin={{
-                                                    vertical: 'top',
-                                                    horizontal: 'right',
-                                                }}
-                                open={Boolean(anchorEl)}
-                                sx={{marginTop:'40px'}}
-                                onClose={handleClose}
+                        
+                        <Menu
+                            id="basic-menu"
+                            open={Boolean(anchorEl)}
+                            anchorEl={anchorEl}
+                            onClose={handleClose}
+                            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                            transformOrigin={{ vertical: "top", horizontal: "right" }}
+                            MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                            }}
+                            style={{ width: "225px", height: "170px", borderRadius: "12px" }}
+                            PaperProps={{
+                            elevation: 0,
+                            sx: {
+                                overflow: "visible",
+                                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                                mt: 1.5,
+                                "& .MuiAvatar-root": {
+                                width: 32,
+                                height: 32,
+                                ml: -0.5,
+                                mr: 1,
+                                },
+                                "&:before": {
+                                content: '""',
+                                display: "block",
+                                position: "absolute",
+                                top: 0,
+                                right: 10,
+                                width: 10,
+                                height: 10,
+                                bgcolor: "background.paper",
+                                transform: "translateY(-50%) rotate(45deg)",
+                                zIndex: 0,
+                                },
+                            },
+                            }}
                         >
-                            <MenuItem onClick={handleClose}>
+                            <MenuItem onClick={()=>setEditProfileOpen(true)}>
                                 <ManageAccountsOutlinedIcon> </ManageAccountsOutlinedIcon> &nbsp;
                                 Edit Profile
                             </MenuItem>
@@ -95,7 +134,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                                 <LockResetOutlinedIcon> </LockResetOutlinedIcon> &nbsp;
                                 Change Password
                             </MenuItem>
-                            
+                            <Divider />
                             <MenuItem onClick={onLogout}>
                                 <LogoutOutlinedIcon> </LogoutOutlinedIcon>  &nbsp;
                                 Logout
@@ -103,7 +142,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                         </Menu>
                     </div>
 
-                    
+                    {EditProfileOpen==true && <EditProfile EditProfileOpen handleEditProfileClose={handleEditProfileClose}/>}
                 </Toolbar>
             </AppBar>
         </Box>

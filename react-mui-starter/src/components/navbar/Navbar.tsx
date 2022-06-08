@@ -14,8 +14,10 @@ import { MenuItem } from '@mui/material';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import EditProfile from './EditProfile';
+import EditProfile from '../../pages/home/EditProfile'
 import { Divider } from '@mui/material';
+import ChangePassword from '../../pages/auth/changePassword/ChangePassword';
+import UploadPost from '../../pages/post/uploadPost';
 
 export type NavbarProps = {
   /**
@@ -30,7 +32,9 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [CurrentUser,setCurrentUser] = useState((JSON.parse(localStorage.getItem('currentUser') as any))||{})
     let [EditProfileOpen,setEditProfileOpen] = useState(false)
-   
+    let [ChangePasswordOpen,setChangePasswordOpen] = useState(false)
+    let [UploadPostOpen,setUploadPostOpen] = useState(false)
+
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => 
     {
         setAnchorEl(event.currentTarget);
@@ -45,8 +49,16 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
     {
         // e.stopPropagation()
         setEditProfileOpen(false)
-        // window.location.reload()
+        window.location.reload()
     }
+
+    const handleChangePasswordClose = () =>
+    {
+        // e.stopPropagation()
+        setChangePasswordOpen(false)
+        window.location.reload()
+    }
+    
     
     
     return (
@@ -68,7 +80,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                             <HomeIcon ></HomeIcon>
                         </IconButton> &nbsp;
                         
-                        <IconButton edge="start" color="inherit" aria-label="menu" >
+                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={()=>setUploadPostOpen(true)}>
                             <AddAPhotoOutlinedIcon ></AddAPhotoOutlinedIcon>
                         </IconButton> &nbsp;
                         
@@ -81,7 +93,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                                 sx={{width: "28px",height: "28px"}}
                                 onClick={handleMenu}
                                 src={`http://192.168.0.22:8080/${CurrentUser.profileImg}`}
-                            > </Avatar>
+                            /> 
                             
                             <a style={{paddingLeft:'4px',fontSize:'18px',fontWeight:600,fontFamily:'Public sans'}}>{CurrentUser.name}</a>
                         </div>
@@ -130,10 +142,11 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                                 Edit Profile
                             </MenuItem>
 
-                            <MenuItem onClick={handleClose}>
+                            <MenuItem onClick={()=>setChangePasswordOpen(true)}>
                                 <LockResetOutlinedIcon> </LockResetOutlinedIcon> &nbsp;
                                 Change Password
                             </MenuItem>
+
                             <Divider />
                             <MenuItem onClick={onLogout}>
                                 <LogoutOutlinedIcon> </LogoutOutlinedIcon>  &nbsp;
@@ -142,8 +155,10 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                         </Menu>
                     </div>
 
-                    {EditProfileOpen==true && <EditProfile EditProfileOpen handleEditProfileClose={handleEditProfileClose}/>}
                 </Toolbar>
+                    {EditProfileOpen==true && <EditProfile EditProfileOpen handleEditProfileClose={handleEditProfileClose}/>}
+                    {ChangePasswordOpen==true && <ChangePassword ChangePasswordOpen setChangePasswordOpen={setChangePasswordOpen}/>}
+                    {UploadPostOpen==true && <UploadPost UploadPostOpen setUploadPostOpen={setUploadPostOpen}/>}
             </AppBar>
         </Box>
     )

@@ -57,19 +57,19 @@ const deleteUser = {
   }),
 };
 
-const editProfile = {
-  body: Joi.object().keys({
-   name: Joi.string(),
-   bio : Joi.string(),
-   gender: Joi.string().required(),
-   email : Joi.string().email(),
-   dob : Joi.string(),
-   mobile : Joi.string(),
-   profileImg: Joi.string(),
+// const editProfile = {
+//   body: Joi.object().keys({
+//    name: Joi.string(),
+//    bio : Joi.string(),
+//    gender: Joi.string().required(),
+//    email : Joi.string().email(),
+//    dob : Joi.string(),
+//    mobile : Joi.string(),
+//    profileImg: Joi.string(),
    
-   removeImg : Joi.boolean()
- })
-};
+//    removeImg : Joi.boolean()
+//  })
+// };
 
 module.exports = {
   createUser,
@@ -78,5 +78,5 @@ module.exports = {
   updateUser,
   updateOrg,
   deleteUser,
-  editProfile
+  // editProfile
 };

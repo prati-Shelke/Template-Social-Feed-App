@@ -6,12 +6,18 @@ const ApiError = require('../utils/ApiError');
 /**
  * Create a user
  * @param {Object} postBody
- * @param {Object} postImg
+ * @param {Array} postImg
  * @returns {Promise<Post>}
  */
 const createPost = async (postBody,postImg,userId) => 
 {
-    return Post.create({...postBody , createdBy:userId ,postImg : postImg.path});
+    let result = []
+    // console.log(postImg)
+    for (var i = 0; i < postImg.length; i++)
+    {
+        result.push({filename:postImg[i].filename , path:postImg[i].path})
+    }
+    return await Post.create({...postBody , createdBy:userId ,postImg : result});
 }
 
 

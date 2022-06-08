@@ -12,7 +12,7 @@ router.use(auth())
 
 router
   .route("/")
-  .post(multer.post.single("postImg"),validate(postValidation.createPost), postController.createPost);
+  .post(multer.post.array("postImg"),validate(postValidation.createPost), postController.createPost);
 //   .get(validate(userValidation.getUsers), userController.getUsers); 
 
 router

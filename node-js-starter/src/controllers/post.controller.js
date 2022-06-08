@@ -7,7 +7,7 @@ const pick = require('../utils/pick');
 const createPost = catchAsync(async (req, res) => 
 {
   
-    let post = await postService.createPost(req.body,req.file,req.user.id)
+    let post = await postService.createPost(req.body,req.files,req.user.id)
     post = await post.populate("createdBy","_id name profileImg")
     res.status(httpStatus.CREATED).send(post);
     

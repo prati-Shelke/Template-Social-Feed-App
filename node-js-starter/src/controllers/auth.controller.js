@@ -109,7 +109,7 @@ const changepassword = async (req, res) => {
     }
     else
     {
-      return res.status(httpStatus.BAD_REQUEST).send({message:"new password and consfirm password does not match"});
+      return res.status(httpStatus.BAD_REQUEST).send({message:"new password and confirm password does not match"});
     }
   } 
   else 

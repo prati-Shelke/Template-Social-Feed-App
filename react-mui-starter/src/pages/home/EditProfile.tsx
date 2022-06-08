@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import "./Navbar.scss";
+import "../../components/navbar/Navbar.scss"
 import { Card, CardActions, RadioGroup } from '@mui/material';
 import { Avatar } from '@mui/material';
 import { Grid } from '@mui/material';
@@ -23,11 +23,16 @@ import IconButton from '@mui/material/IconButton';
 import { Menu } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { Divider } from '@mui/material';
+import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
 {
     const [CurrentUser,setCurrentUser] = useState((JSON.parse(localStorage.getItem('currentUser') as any))||{})
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [Preview, setPreview] = useState()
+    const [ImageFile,setImageFile] = useState(false)
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => 
     {
@@ -41,9 +46,44 @@ const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
 
     const handleEditProfile = async() =>
     {
-        const res = await put("http://localhost:8080/users/edit-profile");
-        console.log(res)
+        // console.log('gi',CurrentUser)
+        const res = await put("http://localhost:8080/users/edit-profile",CurrentUser);
+        localStorage.setItem('currentUser',JSON.stringify(CurrentUser))
+        // console.log(res)
+        handleClose()
+        // handleEditProfileClose()
     }
+
+    const handleUploadProfileImg = async(file:any) =>
+    {
+        
+        CurrentUser.removeImg = false
+        setImageFile(true)
+
+        const formdata = new FormData()
+        formdata.append("profileImg",file)
+        formdata.append("removeImg",CurrentUser.removeImg)
+        
+        const objectUrl:any = URL.createObjectURL(file)
+        setPreview(objectUrl)
+        
+        setCurrentUser(CurrentUser)
+        const res:any = await put("http://localhost:8080/users/edit-profile",formdata);
+        console.log(res)
+        localStorage.setItem('currentUser',JSON.stringify(res.user))
+        handleClose()
+
+    }
+
+    const handleRemoveProfileImg = async() =>
+    {
+        
+        CurrentUser.profileImg = ''
+        CurrentUser.removeImg = true
+        setCurrentUser(CurrentUser)
+        handleEditProfile()
+    }
+    // console.log(CurrentUser)
 
     return (
         <div> 
@@ -56,12 +96,15 @@ const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
             >
                 <Box >
                     <Card id="editModal">
-                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{fontSize:'24px',fontWeight:700,marginTop:'-20px'}}>
+                        <IconButton sx={{marginTop:'-25px',marginLeft:'440px'}} onClick={handleEditProfileClose}>
+                            <CloseOutlinedIcon sx={{color:'#919EAB'}}> </CloseOutlinedIcon>
+                        </IconButton>
+                        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{fontSize:'24px',fontWeight:700,marginTop:'-45px'}}>
                             Profile Update
                         </Typography>
 
                         <div style={{marginTop:'-10px',cursor:'pointer'}} onClick={handleMenu}  >
-                            <Avatar sx={{width:'80px',height:'80px'}} src={`http://192.168.0.22:8080/${CurrentUser.profileImg}`} />
+                            <Avatar sx={{width:'80px',height:'80px'}} src={ImageFile===false ? `http://192.168.0.22:8080/${CurrentUser.profileImg}` : Preview} />
                             <IconButton edge="start" color="inherit" aria-label="menu" sx={{marginLeft:'50px',marginTop:'-50px'}}>
                                 <AddAPhotoRoundedIcon color='primary' sx={{backgroundColor:'white',padding:'5px',borderRadius:"50%",border:'2px solid #DCE0E4'}}></AddAPhotoRoundedIcon>
                             </IconButton>
@@ -123,8 +166,8 @@ const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
                                                 <DatePicker
                                                     // label="Basic example"
                                                     value={CurrentUser.dob}
-                                                    onChange={(e:any) => {
-                                                        setCurrentUser({...CurrentUser,dob:e.target.value})
+                                                    onChange={(newValue:any) => {
+                                                        setCurrentUser({...CurrentUser,dob:newValue})
                                                     }}
                                                     renderInput={(params) => <TextField {...params} size="small"/>}
                                                 />
@@ -167,7 +210,7 @@ const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
                                 MenuListProps={{
                                 "aria-labelledby": "basic-button",
                                 }}
-                                style={{ width: "400px", height: "170px", borderRadius: "12px",marginTop:'-20px'}}
+                                style={{ width: "400px", height: "170px", borderRadius: "12px",marginTop:'-20px',marginLeft:'20px'}}
                                 PaperProps={{
                                 elevation: 0,
                                 sx: {
@@ -185,7 +228,7 @@ const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
                                     display: "block",
                                     position: "absolute",
                                     top: 0,
-                                    left: 65,
+                                    left: 75,
                                     width: 10,
                                     height: 10,
                                     bgcolor: "background.paper",
@@ -195,18 +238,24 @@ const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
                                 },
                                 }}
                             >
-                            <MenuItem onClick={()=>setEditProfileOpen(true)}>
-                                {/* <ManageAccountsOutlinedIcon> </ManageAccountsOutlinedIcon> &nbsp; */}
-                                Upload photo
+                            <MenuItem >
+                                <TextField type="file" id="upload-photo" sx={{display:'none'}} onChange={(e:any)=>handleUploadProfileImg(e.target.files[0])}></TextField>
+                                <label htmlFor='upload-photo'>
+                                    <AddAPhotoOutlinedIcon sx={{color:'#919EAB'}} onClick={()=>document.getElementById('upload')?.click()}></AddAPhotoOutlinedIcon> &nbsp;
+                                    Upload photo
+                                </label>
+                                
                             </MenuItem>
 
-                            <MenuItem onClick={handleClose}>
-                                {/* <LockResetOutlinedIcon> </LockResetOutlinedIcon> &nbsp; */}
+                            <MenuItem onClick={()=>handleRemoveProfileImg()} >
+                               <DeleteOutlineOutlinedIcon sx={{color:'#919EAB'}}> </DeleteOutlineOutlinedIcon>&nbsp;
                                 Remove photo
                             </MenuItem>
+
                             <Divider />
-                            <MenuItem onClick={handleClose}>
-                                {/* <LogoutOutlinedIcon> </LogoutOutlinedIcon>  &nbsp; */}
+
+                            <MenuItem onClick={handleClose} >
+                                <CloseOutlinedIcon sx={{color:'#919EAB'}}> </CloseOutlinedIcon>&nbsp;
                                 Cancel
                             </MenuItem>
                             </Menu>

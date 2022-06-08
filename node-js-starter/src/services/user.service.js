@@ -123,7 +123,7 @@ const deleteUserById = async (userId) => {
  * @returns {Promise<User>}
  */
  const updatePassword = async (userId, newPassword) => {
-  return User.updateOne({ userId }, { password: newPassword });
+  return User.findByIdAndUpdate(userId, { password: newPassword });
 };
 
 
@@ -143,11 +143,14 @@ const editProfileById = async (userId, userBody,userPhoto) =>
     // console.log(userPhoto);
     if(userBody.removeImg === true)
     {
+      console.log('hi')
       await User.findByIdAndUpdate(userId,{...userBody,profileImg:""})
     }
     else
     {
+      console.log('bye',userPhoto)
       await User.findByIdAndUpdate(userId,{ ...userBody , profileImg : userPhoto ? userPhoto.path : user.profileImg})
+      // Object.assign(user,userBody)
     }
     const user1 = await getUserById(userId)
     return user1

@@ -54,6 +54,7 @@ const deleteUser = catchAsync(async (req, res) => {
 
 //------------------------------------------TO UPDATE PROFILE--------------------------------------
 const editProfile = catchAsync(async(req,res) => {
+  console.log(req.file)
   let user = await userService.editProfileById(req.user.id , req.body , req.file)
   res.status(httpStatus.OK).send({message:"user updated successfully",user})
 })
@@ -63,7 +64,7 @@ const getbookmarkedPost = catchAsync(async(req,res) =>
 {
     // console.log("u:")
     let user = await userService.getbookmarkedPost(req.user.id)
-    res.status(httpStatus.CREATED).send(user);
+    res.status(httpStatus.OK).send(user);
 })
 
 module.exports = {

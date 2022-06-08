@@ -16,7 +16,7 @@ router
   .post(validate(userValidation.createUser), userController.createUser)
   .get(validate(userValidation.getUsers), userController.getUsers);
 
-// // Routes: get one user, update user, delete user
+// Routes: get one user, update user, delete user
 // router
 //   .route("/:userId")
 //   .get(validate(userValidation.getUser), userController.getUser)
@@ -32,7 +32,7 @@ router
   .route("/edit-profile")
   .put(
     multer.upload.single("profileImg"),
-    validate(userValidation.editProfile),
+    // validate(userValidation.editProfile),
     userController.editProfile
   );
 

@@ -4,7 +4,7 @@ import './home.scss'
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Card } from '@mui/material';
-import { get,put } from '../../utils/http/httpMethods';
+import { get,post,put } from '../../utils/http/httpMethods';
 import { Skeleton } from '@mui/material';
 import { CardMedia,CardContent,CardActions } from '@mui/material';
 import FavoriteIcon from "@mui/icons-material/Favorite"
@@ -17,46 +17,66 @@ import { Avatar } from '@mui/material';
 import { CardHeader } from '@mui/material';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+// import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import moment from 'moment';
 import Picker from 'emoji-picker-react';
 import { InputAdornment } from '@mui/material';
+import SimpleImageSlider from "react-simple-image-slider";
+
 
 function Home() 
 {
 
     const [AllPosts, setAllPosts] = useState([]);
     const [AllUsers,setAllUsers] = useState([])
-    const [loading, setLoading] = useState(true);
-    const [expanded, setExpanded] = useState(false);
     const [CurrentUser,setCurrentUser] = useState((JSON.parse(localStorage.getItem('currentUser') as any))||{})
     const [showPicker, setShowPicker] = useState(false)
+    let [Url,setUrl] = useState([])
 
+    //-------------------------------FOR GETTING ALL POSTS----------------------------------------
     const fetchPost = async() =>
-        {
-            return get("http://localhost:8080/posts/getPosts?sortBy=desc&limit=200&page=1")
-            .then((res:any)=>
-                    {   
-                        setAllPosts(res.results)
-                        // history.push("/auth/login")
-                        // window.location.reload()
-                    }
-            )
-        }
+    {
+        return get("http://localhost:8080/posts/getPosts?sortBy=desc&limit=200&page=1")
+        .then((res:any)=>
+            {   
+                setAllPosts(res.results)
+                // history.push("/auth/login")
+                // window.location.reload()
 
+                Url = res.results.map((post:any)=>
+                {
+                    return post.postImg.map((Img:any)=>
+                    {
+                        return `http://192.168.0.22:8080/${Img.path}`
+                    })
+                })
+                setUrl(Url)
+            }
+        )
+    }
+
+
+    //------------------------------------FOR GETTING ALL THE USERS-------------------------------
+    const fetchUser = async() =>
+    {
+        return get("http://localhost:8080/users")
+        .then((res:any)=>
+            {   
+                setAllUsers(res.results)
+
+                res.results.map((user:any) =>
+                {
+                    user._id === CurrentUser._id && localStorage.setItem('currentUser',JSON.stringify(user))
+                })
+                // history.push("/auth/login")
+                // window.location.reload()
+            }
+        )
+    }
+   
     useEffect(() => 
     {
-        const fetchUser = async() =>
-        {
-            return get("http://localhost:8080/users")
-            .then((res:any)=>
-                    {   
-                        setAllUsers(res.results)
-                        // history.push("/auth/login")
-                        // window.location.reload()
-                    }
-            )
-        }
         fetchPost()
         fetchUser()
     }, [])
@@ -65,28 +85,37 @@ function Home()
  
     const onEmojiClick = (event:React.MouseEvent< Element,MouseEvent>, emojiObject:any) =>
     {
-        
         setShowPicker(false);
     }
 
+    //-------------------------------WHEN USER LIKES OR DISLIKES THE POST-----------------------------
     const handleLikes = async (postId:any) => 
     {
         const res = await put(`http://localhost:8080/posts/likes/${postId}`);
         fetchPost()
         console.log(res)
     }
+
+    //--------------------------------WHEN USER BOOKMARK THE POST-------------------------------------
+    const handleBookmark = async(postId:any) =>
+    {
+        const res = await post(`http://localhost:8080/posts/bookmarkPost/${postId}`)
+        fetchPost()
+        fetchUser()
+        console.log(res)
+    }
     
-    console.log(AllUsers,AllPosts)
+    // console.log(AllUsers,AllPosts)
     return (
         <Container maxWidth="sm" >
-            {AllPosts && AllPosts.map((post:any) =>
+            {AllPosts && AllPosts.map((post:any,ind:any) =>
                 <Card key={post._id} id="postCard" sx={{marginTop:'40px'}}>
-                    { AllUsers && AllUsers.map((user:any) =>
+                    { AllUsers && AllUsers.map((user:any,ind) =>
                         user._id === post.createdBy &&
                         (<CardHeader
                             key={user._id}
                             avatar={
-                                <Avatar  aria-label="recipe"
+                                <Avatar aria-label="recipe"
                                     src={`http://192.168.0.22:8080/${user.profileImg}`}>
                                 </Avatar>
                             }
@@ -100,13 +129,31 @@ function Home()
                             sx={{marginTop:'-10px'}}
                         />)
                     )}
-                    <CardMedia
-                        component="img"
-                        height="194"
-                        image={`http://192.168.0.22:8080/${post.postImg}`}
-                        alt="Paella dish"
-                        sx={{width: "508px",height: "508px"}}
-                    />
+
+                    { post.postImg.length === 1 ? post.postImg.map((img:any) =>
+                       
+                            (<CardMedia
+                                key={post._id}
+                                component="img"
+                                height="194"
+                                image={`http://192.168.0.22:8080/${img.path}`}
+                                alt="Paella dish"
+                                sx={{width: "508px",height: "508px"}}
+                            />))
+                        :
+                            (
+                                <SimpleImageSlider
+                                    // key={}
+                                    width={508}
+                                    height={468}
+                                    images={Url[ind]}
+                                    showBullets={true}
+                                    showNavs={true}
+                                    
+                                />
+                            )
+
+                    }
 
                     <CardActions disableSpacing>
 
@@ -118,8 +165,8 @@ function Home()
                             <ChatBubbleOutlineIcon id='commentIcon'></ChatBubbleOutlineIcon>
                         </IconButton>
 
-                        <IconButton aria-label="share" sx={{marginLeft:'365px'}}>
-                            <BookmarkBorderIcon id='bookmarkIcon'></BookmarkBorderIcon>
+                        <IconButton aria-label="share" sx={{marginLeft:'365px'}} onClick={()=>handleBookmark(post._id)}>
+                            <BookmarkIcon sx={post.bookmarks.includes(CurrentUser._id)? {color:"black"} : {color:''}} ></BookmarkIcon>
                         </IconButton>
 
                     </CardActions>

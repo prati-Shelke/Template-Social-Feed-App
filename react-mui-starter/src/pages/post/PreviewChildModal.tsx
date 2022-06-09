@@ -1,12 +1,16 @@
 import React,{useState,useEffect} from 'react'
-import { Modal,Box,Card, CardMedia, } from '@mui/material'
+import { Modal,Box,Card, CardMedia, Typography, } from '@mui/material'
 import SimpleImageSlider from "react-simple-image-slider";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DiscardProcess from './DiscardProcess';
+import FinalUpload from './FinalUpload';
 
-
-function PreviewChildModal({PreviewChildModalOpen,setPreviewChildModalOpen,UploadedFile}:any) 
+function PreviewChildModal({setUploadPostOpen,PreviewChildModalOpen,setPreviewChildModalOpen,UploadedFile,setUploadedFile}:any) 
 {
-    console.log(UploadedFile)
+    
     const [Preview,setPreview] = useState([])
+    const [DiscardProcessOpen,setDiscardProcessOpen] = useState(false)
+    const [FinalUploadOpen,setFinalUploadOpen] = useState(false)
 
     useEffect(() => {
         let temp = UploadedFile.filePreview.map((path:any)=>
@@ -14,8 +18,7 @@ function PreviewChildModal({PreviewChildModalOpen,setPreviewChildModalOpen,Uploa
             return path
         })
         setPreview(temp)
-
-    }, [])    
+    }, [PreviewChildModalOpen])    
 
     return (
         <div>
@@ -30,18 +33,29 @@ function PreviewChildModal({PreviewChildModalOpen,setPreviewChildModalOpen,Uploa
                 <Box>
                     
                     <Card id='UploadPostCard'>
+
+                        <div style={{marginTop:'10px',marginLeft:'10px',}}>
+                            <ArrowBackIcon sx={{color:'#919EAB',cursor:'pointer'}} onClick={()=>setDiscardProcessOpen(true)}></ArrowBackIcon>
+                        </div>
+
+                        <Typography onClick={()=> setFinalUploadOpen(true)} sx={{color:'#1890FF',textAlign:'right',marginTop:'-25px',marginRight:'10px',fontSize:'16px',fontWeight:700,cursor:'pointer'}}>
+                            Next
+                        </Typography>
+
                         {Preview.length >1 ?
                             <SimpleImageSlider
                                 width={530}
-                                height={479}
+                                height={490}
                                 images={Preview}
                                 showBullets={true}
                                 showNavs={true}  
-                                style={{marginTop:'50px'}}          
+                                style={{marginTop:'10px'}}          
                             /> :
-                            <img alt="not found" sx={{marginTop:'90px'}} height={479} width={530} src={Preview}/>
+                            <img alt="not found" src={Preview} style={{marginTop:'10px'}} height={480} width={520} />
                         }
                         </Card>
+                        <DiscardProcess setPreviewChildModalOpen={setPreviewChildModalOpen} DiscardProcessOpen={DiscardProcessOpen} setDiscardProcessOpen={setDiscardProcessOpen} setUploadedFile={setUploadedFile} />
+                        <FinalUpload setUploadPostOpen={setUploadPostOpen} setPreviewChildModalOpen={setPreviewChildModalOpen} FinalUploadOpen={FinalUploadOpen} setFinalUploadOpen={setFinalUploadOpen} UploadedFile={UploadedFile} setUploadedFile={setUploadedFile} />
                 </Box>
             </Modal>
         </div>

@@ -158,7 +158,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                 </Toolbar>
                     {EditProfileOpen==true && <EditProfile EditProfileOpen handleEditProfileClose={handleEditProfileClose}/>}
                     {ChangePasswordOpen==true && <ChangePassword ChangePasswordOpen setChangePasswordOpen={setChangePasswordOpen}/>}
-                    {UploadPostOpen==true && <UploadPost UploadPostOpen setUploadPostOpen={setUploadPostOpen}/>}
+                    <UploadPost UploadPostOpen={UploadPostOpen} setUploadPostOpen={setUploadPostOpen}/>
             </AppBar>
         </Box>
     )

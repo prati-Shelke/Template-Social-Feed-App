@@ -12,7 +12,7 @@ const ApiError = require('../utils/ApiError');
 const createPost = async (postBody,postImg,userId) => 
 {
     let result = []
-    // console.log(postImg)
+    console.log(postImg)
     for (var i = 0; i < postImg.length; i++)
     {
         result.push({filename:postImg[i].filename , path:postImg[i].path})

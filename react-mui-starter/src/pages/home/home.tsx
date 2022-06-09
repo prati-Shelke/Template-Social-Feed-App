@@ -105,7 +105,7 @@ function Home()
         console.log(res)
     }
     
-    // console.log(AllUsers,AllPosts)
+    console.log(AllUsers,AllPosts)
     return (
         <Container maxWidth="sm" >
             {AllPosts && AllPosts.map((post:any,ind:any) =>

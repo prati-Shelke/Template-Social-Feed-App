@@ -140,9 +140,10 @@ const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
 
                                 <Grid item sx={{marginTop:'8px'}}>
                                     <TextareaAutosize
+                                        
                                         aria-label="minimum height"
                                         placeholder="Enter your bio here..."
-                                        style={{ width: '475px',height:"70px",border:'1px solid rgba(145, 158, 171, 0.32)', }}
+                                        style={{ width: '475px',height:"70px",border:'1px solid rgba(145, 158, 171, 0.32)'}}
                                         value={CurrentUser.bio}
                                         onChange={(e:any)=>setCurrentUser({...CurrentUser,bio:e.target.value})}
                                         />

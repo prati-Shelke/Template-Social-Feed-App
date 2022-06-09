@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { Modal,Box,Card,CardActions, Typography, TextField,Button} from '@mui/material'
 import { IconButton } from '@mui/material'
 import './post.scss'
@@ -10,6 +10,7 @@ function UploadPost({UploadPostOpen,setUploadPostOpen}:any)
 {
     const [PreviewChildModalOpen,setPreviewChildModalOpen] = useState(false)
     const [UploadedFile,setUploadedFile] = useState({file:[],filePreview:[]})
+
 
     const handleUpload = (files:any) =>
     {
@@ -69,7 +70,7 @@ function UploadPost({UploadPostOpen,setUploadPostOpen}:any)
                             </label>
                         </CardActions>
                     </Card>
-                    {PreviewChildModalOpen==true && <PreviewChildModal PreviewChildModalOpen setPreviewChildModalOpen={setPreviewChildModalOpen} UploadedFile={UploadedFile}/>}
+                   <PreviewChildModal setUploadPostOpen={setUploadPostOpen} PreviewChildModalOpen={PreviewChildModalOpen} setPreviewChildModalOpen={setPreviewChildModalOpen} UploadedFile={UploadedFile} setUploadedFile={setUploadedFile}/>
                 </Box>
             </Modal>
         </div>

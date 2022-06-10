@@ -15,7 +15,15 @@ const postSchema = mongoose.Schema(
                                 comment : String ,
                                 likes : {type:Array , default:[]},
                                 createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
-                                createdAt: {type:Date , default:new Date()}
+                                createdAt: {type:Date , default:new Date()},
+                                reply :{type: 
+                                        [{
+                                            repliedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+                                            comment:{type:String},
+                                            likes:{type:Array , default:[]},
+                                            repliedAt:{type:Date , default:new Date()}
+                                        }]
+                                    }
                             }
                         ]},
         bookmarks : { type:Array ,default:[]},
@@ -25,6 +33,7 @@ const postSchema = mongoose.Schema(
         timestamps: true,
     }
 )
+
 
 postSchema.plugin(softDelete);
 postSchema.plugin(paginate);

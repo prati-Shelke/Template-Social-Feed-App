@@ -33,6 +33,7 @@ function Home()
     const [CurrentUser,setCurrentUser] = useState((JSON.parse(localStorage.getItem('currentUser') as any))||{})
     const [showPicker, setShowPicker] = useState(false)
     let [Url,setUrl] = useState([])
+    const [Comment,setComment] = useState('')
 
     //-------------------------------FOR GETTING ALL POSTS----------------------------------------
     const fetchPost = async() =>
@@ -105,6 +106,16 @@ function Home()
         console.log(res)
     }
     
+    
+    //---------------------------------WHEN USER COMMENTS THE POST-----------------------------------
+    const handleComment = async(postId:any) =>
+    {
+
+        let res = await put(`http://localhost:8080/posts/comments/${postId}`,{comment:Comment})
+        console.log(res)
+        fetchPost()
+    }
+
     console.log(AllUsers,AllPosts)
     return (
         <Container maxWidth="sm" >
@@ -204,7 +215,7 @@ function Home()
                         </Typography>
                     </CardActions>
                        
-                    <CardActions className="picker-container" sx={{marginTop:'-10px',width:'300px'}}>
+                    <CardActions  sx={{marginTop:'-10px'}}>
                         <img className="emoji-icon" style={{height:'20px',color: "#000000"}} src="https://icons.getbootstrap.com/assets/icons/emoji-smile.svg" onClick={() => setShowPicker((val) => !val)}/>
                             {showPicker && (
                                 <Picker
@@ -212,7 +223,26 @@ function Home()
                                     onEmojiClick={onEmojiClick}
                                 />
                             )}
-                        <TextField sx={{paddingLeft:'10px',width:'560px'}} InputProps={{disableUnderline: true}} id="standard-basic" placeholder="Add a comment...." variant="standard"/>
+                        <TextField 
+                            sx={{paddingLeft:'10px',width:'28rem'}} 
+                            InputProps={{disableUnderline: true,endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    edge="end"
+                                    color="primary"
+                                    style={{ fontSize: "18px" }}
+                                    onClick={()=> handleComment(post._id)}
+                                  >
+                                    Post
+                                  </IconButton>
+                                </InputAdornment>
+                              )}} 
+                            id="standard-basic" 
+                            placeholder="Add a comment...." 
+                            variant="standard"
+                            value={Comment}
+                            onChange = {(e:any)=> setComment(e.target.value)}
+                        />
                      
                     </CardActions>
 

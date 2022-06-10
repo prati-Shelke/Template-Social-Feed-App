@@ -25,6 +25,11 @@ router
 module.exports  = router
 
 
+router
+  .route("/likeComment/:postId/:commentId")
+  .put(postController.likeToComment)
+
+
 router  
   .route("/bookmarkPost/:postId")
   .post(postController.bookmarkPost)
@@ -33,3 +38,10 @@ router
   .route("/getPosts")
   .get(postController.getPosts)
 
+router
+  .route("/reply/:postId/:commentId")
+  .post(postController.replyToComment)
+
+router
+  .route("/likeReply/:postId/:commentId/:replyId")
+  .put(postController.likeToReply)

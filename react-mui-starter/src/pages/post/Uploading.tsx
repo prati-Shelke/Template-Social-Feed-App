@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useEffect} from 'react'
 import { Modal,Box,Card,CardActions, Typography, TextField,Button} from '@mui/material'
 import { IconButton } from '@mui/material'
 import './post.scss'
@@ -6,32 +6,40 @@ import uploadImg from './bro.jpg'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import PreviewChildModal from './PreviewChildModal'
 
-function UploadPost({UploadPostOpen,setUploadPostOpen}:any) 
+function Uploading({UploadingOpen,setUploadingOpen,setFinalUploadOpen}:any) 
 {
-    const [PreviewChildModalOpen,setPreviewChildModalOpen] = useState(false)
-    const [UploadedFile,setUploadedFile] = useState({file:[],filePreview:[]})
-    
 
-    const handleUpload = (files:any) =>
+
+    //-------------------------------------WHEN USER FINALLY UPLOAD THE POST----------------------
+    const handleUploadPost = async() =>
     {
-        for(let i=0;i<files.length;i++)
-        {
-            
-            const objectUrl:any = URL.createObjectURL(files[i])
-            UploadedFile.file.push(files[i])
-            UploadedFile.filePreview.push(objectUrl)
-            // setUploadedFile({...UploadedFile , file:e.target.files[i]})
-        }
-        setPreviewChildModalOpen(true)
+        setUploadingOpen(true)
+        
+        // let formdata = new FormData()
+
+        // let temp = UploadedFile.file.map((img:any)=>{ return img})
+        // for(let i=0;i<UploadedFile.file.length;i++)
+        // {
+        //     formdata.append('postImg',temp[i])
+        // }
+        
+        // formdata.append('caption',Caption)
+        // formdata.append('location',Location)
+        
+        // let res = await post('http://localhost:8080/posts',formdata)
+        // console.log(res)
+        // setUploadPostOpen(false)
+        // setPreviewChildModalOpen(false)
+        // setFinalUploadOpen(false)
+        // window.location.reload()
     }
-    console.log(UploadedFile)
-    
+
     return (
         <div>
             <Modal
                 disableAutoFocus={true}
-                open={UploadPostOpen}
-                onClose={()=>setUploadPostOpen(false)}
+                open={UploadingOpen}
+                onClose={()=>setUploadingOpen(false)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
                 
@@ -40,7 +48,7 @@ function UploadPost({UploadPostOpen,setUploadPostOpen}:any)
 
                     <Card id='UploadPostCard'>
                         
-                        <IconButton sx={{float:'right'}} onClick={()=>{setUploadedFile({file:[],filePreview:[]});setUploadPostOpen(false)}}>
+                        <IconButton sx={{float:'right'}} onClick={()=>setUploadingOpen(false)}>
                             <CloseOutlinedIcon sx={{color:'#919EAB'}}> </CloseOutlinedIcon>
                         </IconButton>
                        
@@ -53,7 +61,7 @@ function UploadPost({UploadPostOpen,setUploadPostOpen}:any)
                        </Typography>
                         
                         <Typography sx={{color: "#919EAB",fontSize:'14px',fontFamily:'Public sans',fontWeight:400,textAlign:'center'}}>
-                            Drag photo from device to upload
+                            Just set on one place , images being  upload
                         </Typography>
 
                         <CardActions sx={{mt:14,marginLeft:'170px'}}>
@@ -70,11 +78,11 @@ function UploadPost({UploadPostOpen,setUploadPostOpen}:any)
                             </label>
                         </CardActions>
                     </Card>
-                   <PreviewChildModal setUploadPostOpen={setUploadPostOpen} PreviewChildModalOpen={PreviewChildModalOpen} setPreviewChildModalOpen={setPreviewChildModalOpen} UploadedFile={UploadedFile} setUploadedFile={setUploadedFile}/>
+                  
                 </Box>
             </Modal>
         </div>
     )
 }
 
-export default UploadPost
+export default Uploading

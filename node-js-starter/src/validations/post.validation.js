@@ -8,6 +8,7 @@ const createPost =
         {
             postImg: Joi.string(),
             caption: Joi.string().required(),
+            location:Joi.string(),
             createdBy : Joi.string()
         })
 }

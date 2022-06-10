@@ -7,6 +7,7 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
 import './post.scss'
 import { post } from '../../utils/http/httpMethods';
+import Uploading from './Uploading';
 
 function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen,setFinalUploadOpen,UploadedFile,setUploadedFile}:any) 
 {
@@ -16,7 +17,7 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
     const fileRef:any = useRef()
     const [Caption,setCaption] = useState('')
     const [Location,setLocation] = useState('')
-
+    const [UploadingOpen,setUploadingOpen] = useState(false)
     
     const handlePreview = () =>
     {
@@ -67,6 +68,8 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
     //-------------------------------------WHEN USER FINALLY UPLOAD THE POST----------------------
     const handleUploadPost = async() =>
     {
+        // setUploadingOpen(true)
+        
         let formdata = new FormData()
 
         let temp = UploadedFile.file.map((img:any)=>{ return img})
@@ -85,6 +88,7 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
         setFinalUploadOpen(false)
         window.location.reload()
     }
+   
 
     return (
         <div>
@@ -175,7 +179,9 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
                                 </div>
                             </CardContent>
                         </div>
-                        </Card>
+                    </Card>
+
+                    <Uploading UploadingOpen={UploadingOpen} setUploadingOpen={setUploadingOpen} setFinalUploadOpen={setFinalUploadOpen}/>
                         
                 </Box>
             </Modal>

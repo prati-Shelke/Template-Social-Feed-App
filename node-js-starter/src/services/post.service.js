@@ -12,7 +12,7 @@ const ApiError = require('../utils/ApiError');
 const createPost = async (postBody,postImg,userId) => 
 {
     let result = []
-    console.log(postImg)
+    // console.log(postImg)
     for (var i = 0; i < postImg.length; i++)
     {
         result.push({filename:postImg[i].filename , path:postImg[i].path})
@@ -96,6 +96,121 @@ const likePost = async(postId,userId) =>
     }
 }
 
+//--------------------------------------------SERVICE TO LIKE THE COMMENT----------------------------
+/**
+ * Create a user
+ * @param {ObjectId} postId
+ * @param {ObjectId} commentId
+ * @param {ObjectId} userId
+ * @returns {Promise<Post>}
+ */
+
+
+ const likeToComment = async(postId,commentId,userId) =>
+ {
+    try 
+    {
+        const post = await Post.findById(postId)
+        if(post)
+        {
+            const comment = await post.comments.filter((comment) => JSON.stringify(comment._id) === JSON.stringify(commentId))
+            
+            if(!comment[0].likes.includes(userId))
+            {
+                comment[0].likes.push(userId)
+            }
+            else
+            {
+                comment[0].likes.remove(userId)
+            }
+            Object.assign(post, comment);
+            await post.save();
+            return post;
+        }
+        
+    } catch (err) {
+        // resp.status(500).json({message:err.message})
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Post not found');
+    }
+ }
+
+ 
+//--------------------------------------------SERVICE TO ADD REPLY TO THE COMMENT----------------------------
+/**
+ * Create a user
+ * @param {ObjectId} postId
+ * @param {ObjectId} commentId
+ * @param {ObjectId} userId
+ * @param {Object} replyBody
+ * @returns {Promise<Post>}
+ */
+
+
+ const replyToComment = async(postId,commentId,userId,replyBody) =>
+ {
+    try 
+    {
+        const post = await Post.findById(postId)
+        const comment = await post.comments.filter((comment) => JSON.stringify(comment._id) === JSON.stringify(commentId))
+        
+        comment[0].reply.push({comment:replyBody.comment , repliedBy:userId })
+
+        Object.assign(post, comment);
+        await post.save();
+        return post;
+        
+    } catch (err) {
+        // resp.status(500).json({message:err.message})
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Post not found');
+    }
+}
+
+
+//--------------------------------------------SERVICE TO LIKE THE COMMENT----------------------------
+/**
+ * Create a user
+ * @param {ObjectId} postId
+ * @param {ObjectId} commentId
+ * @param {ObjectId} replyId
+ * @param {ObjectId} userId
+ * @returns {Promise<Post>}
+ */
+
+
+const likeToReply = async(postId,commentId,replyId,userId) =>
+{
+    try 
+    {
+        const post = await Post.findById(postId)
+       
+        if(post)
+        {
+            const comment = await post.comments.filter((comment) => JSON.stringify(comment._id) === JSON.stringify(commentId))
+            const reply = comment[0].reply.filter((reply) => JSON.stringify(reply._id) === JSON.stringify(replyId))
+            console.log(reply)
+            if(!reply[0].likes.includes(userId))
+            {
+                console.log("hi")
+                reply[0].likes.push(userId)
+            }
+            else
+            {
+                console.log("bye")
+                reply[0].likes.remove(userId)
+            }
+            Object.assign(post, comment);
+            await post.save();
+            return post;
+        }
+        
+    } catch (err) {
+        // resp.status(500).json({message:err.message})
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Post not found');
+    }
+ }
+
+
+
 //--------------------------------------------SERVICE TO BOOKMARK THE POST----------------------------
 /**
  * Create a user
@@ -154,4 +269,4 @@ const queryUsers = async (_, options) =>
     return posts; 
 }
 
-module.exports = {createPost,likePost,commentPost,queryUsers,bookmarkPost}
+module.exports = {createPost,likePost,commentPost,likeToComment,replyToComment,likeToReply,queryUsers,bookmarkPost}

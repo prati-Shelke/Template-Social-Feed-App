@@ -144,7 +144,7 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
                                     <img className="emoji-icon" style={{height:'20px',color: "#000000",marginTop:'20px'}} src="https://icons.getbootstrap.com/assets/icons/emoji-smile.svg" onClick={() => setShowPicker((val) => !val)}/>
                                     {showPicker && (
                                         <Picker
-                                            pickerStyle={{marginBottom:'20px' }}
+                                            pickerStyle={{width:'100%'}}
                                             onEmojiClick={onEmojiClick}
                                         />
                                     )}

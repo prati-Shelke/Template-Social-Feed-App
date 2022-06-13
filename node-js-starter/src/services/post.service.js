@@ -20,6 +20,18 @@ const createPost = async (postBody,postImg,userId) =>
     return await Post.create({...postBody , createdBy:userId ,postImg : result});
 }
 
+//----------------------------------------SERVICE TO GET THE POST BY ID----------------------------------
+/**
+ * Create a user
+ * @param {ObjectId} postId
+ * @returns {Promise<Post>}
+ */
+ const getPostById = async (postId) => 
+ {
+    let post = await Post.findById(postId)
+    return post
+ }
+
 
 //--------------------------------------------SERVICE TO LIKE THE POST----------------------------
 /**
@@ -269,4 +281,4 @@ const queryUsers = async (_, options) =>
     return posts; 
 }
 
-module.exports = {createPost,likePost,commentPost,likeToComment,replyToComment,likeToReply,queryUsers,bookmarkPost}
+module.exports = {createPost,getPostById,likePost,commentPost,likeToComment,replyToComment,likeToReply,queryUsers,bookmarkPost}

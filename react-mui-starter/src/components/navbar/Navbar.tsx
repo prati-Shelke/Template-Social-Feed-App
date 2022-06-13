@@ -50,6 +50,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
         // e.stopPropagation()
         setEditProfileOpen(false)
         window.location.reload()
+        
     }
 
     const handleChangePasswordClose = () =>

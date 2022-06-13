@@ -49,9 +49,11 @@ const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
         // console.log('gi',CurrentUser)
         const res = await put("http://localhost:8080/users/edit-profile",CurrentUser);
         localStorage.setItem('currentUser',JSON.stringify(CurrentUser))
-        // console.log(res)
+        console.log(res)
+
         handleClose()
-        // handleEditProfileClose()
+        // window.location.reload()
+        handleEditProfileClose()
     }
 
     const handleUploadProfileImg = async(file:any) =>

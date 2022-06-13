@@ -38,6 +38,10 @@ router
   .route("/getPosts")
   .get(postController.getPosts)
 
+router  
+  .route("/getPostById/:postId")
+  .get(postController.getPostById)
+
 router
   .route("/reply/:postId/:commentId")
   .post(postController.replyToComment)

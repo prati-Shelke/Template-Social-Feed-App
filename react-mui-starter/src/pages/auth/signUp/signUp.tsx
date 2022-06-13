@@ -34,7 +34,7 @@ function SignUp()
                     }
             )
     }
-    console.log(Obj)
+    // console.log(Obj)
     
     return (
         <Container component="main" maxWidth="xs" >

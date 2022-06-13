@@ -21,6 +21,14 @@ const getPosts = catchAsync(async (req,res) =>
     res.status(httpStatus.OK).send(post)
 })
 
+//--------------------------------------------TO GET ONE POST BY ID----------------------------
+const getPostById = catchAsync(async (req,res) =>
+{
+    const {postId} = req.params
+    const post = await(await postService.getPostById(postId)).populate({path:"comments.createdBy",select:"_id name profileImg"})
+    res.status(httpStatus.OK).send(post)
+})
+
 //-----------------------------------------TO LIKE THE POST---------------------------------------
 const likePost = catchAsync(async(req,res) =>
 {
@@ -82,4 +90,4 @@ const bookmarkPost = catchAsync(async(req,res) =>
 })
 
 
-module.exports = {createPost,likePost,commentPost,likeToComment,replyToComment,likeToReply,getPosts,bookmarkPost}
+module.exports = {createPost,getPostById,likePost,commentPost,likeToComment,replyToComment,likeToReply,getPosts,bookmarkPost}

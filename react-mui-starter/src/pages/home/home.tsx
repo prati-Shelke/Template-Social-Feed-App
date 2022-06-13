@@ -23,6 +23,7 @@ import moment from 'moment';
 import Picker from 'emoji-picker-react';
 import { InputAdornment } from '@mui/material';
 import SimpleImageSlider from "react-simple-image-slider";
+import CommentModal from './CommentModal';
 
 
 function Home() 
@@ -34,7 +35,9 @@ function Home()
     const [showPicker, setShowPicker] = useState(false)
     let [Url,setUrl] = useState([])
     const [Comment,setComment] = useState('')
-
+    const [CommentModalOpen,setCommentModalOpen] = useState(false)
+    const [CurrentPostId,setCurrentPostId] = useState('')
+ 
     //-------------------------------FOR GETTING ALL POSTS----------------------------------------
     const fetchPost = async() =>
     {
@@ -92,6 +95,7 @@ function Home()
     //-------------------------------WHEN USER LIKES OR DISLIKES THE POST-----------------------------
     const handleLikes = async (postId:any) => 
     {
+        
         const res = await put(`http://localhost:8080/posts/likes/${postId}`);
         fetchPost()
         console.log(res)
@@ -116,7 +120,8 @@ function Home()
         fetchPost()
     }
 
-    console.log(AllUsers,AllPosts)
+    // console.log(AllUsers,AllPosts)
+
     return (
         <Container maxWidth="sm" >
             {AllPosts && AllPosts.map((post:any,ind:any) =>
@@ -136,7 +141,7 @@ function Home()
                             </IconButton>
                             }
                             title={user.name}
-                            subheader="September 14, 2016"
+                            subheader={post.location}
                             sx={{marginTop:'-10px'}}
                         />)
                     )}
@@ -172,8 +177,8 @@ function Home()
                             <FavoriteIcon sx={post.likes.includes(CurrentUser._id)? { fill: "red" }: { color: "" }}></FavoriteIcon>
                         </IconButton>
 
-                        <IconButton aria-label="share">
-                            <ChatBubbleOutlineIcon id='commentIcon'></ChatBubbleOutlineIcon>
+                        <IconButton aria-label="share" onClick={()=> {setCurrentPostId(post._id);setCommentModalOpen(true)}}>
+                            <ChatBubbleOutlineIcon id='commentIcon' ></ChatBubbleOutlineIcon>
                         </IconButton>
 
                         <IconButton aria-label="share" sx={{marginLeft:'365px'}} onClick={()=>handleBookmark(post._id)}>
@@ -199,7 +204,7 @@ function Home()
 
                     <CardActions>
                         {post.comments.length!==0 ?  
-                        <Typography sx={{fontSize:'14px',fontWeight:400,marginTop:'-35px',color: "#919EAB",cursor:'pointer'}}>
+                        <Typography sx={{fontSize:'14px',fontWeight:400,marginTop:'-35px',color: "#919EAB",cursor:'pointer'}} onClick={()=> {setCurrentPostId(post._id);setCommentModalOpen(true)}}>
                             View all {post.comments.length} comments
                         </Typography>
                         :
@@ -230,7 +235,7 @@ function Home()
                                   <IconButton
                                     edge="end"
                                     color="primary"
-                                    style={{ fontSize: "18px" }}
+                                    style={{ fontSize: "16px",fontWeight:700 }}
                                     onClick={()=> handleComment(post._id)}
                                   >
                                     Post
@@ -245,9 +250,10 @@ function Home()
                         />
                      
                     </CardActions>
-
+                            
                 </Card>
             )}
+            {CommentModalOpen == true && <CommentModal CurrentPostId={CurrentPostId} CommentModalOpen={CommentModalOpen} setCommentModalOpen={setCommentModalOpen} AllUsers={AllUsers} CurrentUser={CurrentUser} handleLikes={handleLikes} handleBookmark={handleBookmark} fetchPost={fetchPost}/>}
         </Container>
     )
 }

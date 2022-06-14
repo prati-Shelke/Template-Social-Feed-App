@@ -25,7 +25,7 @@ const getPosts = catchAsync(async (req,res) =>
 const getPostById = catchAsync(async (req,res) =>
 {
     const {postId} = req.params
-    const post = await(await postService.getPostById(postId)).populate({path:"comments.createdBy",select:"_id name profileImg"})
+    const post = await(await postService.getPostById(postId)).populate([{path:"comments.createdBy",select:"_id name profileImg"},{path:"comments.reply.repliedBy",select:"_id name profileImg"}])
     res.status(httpStatus.OK).send(post)
 })
 

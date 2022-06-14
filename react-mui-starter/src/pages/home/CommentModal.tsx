@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState,useEffect, Fragment} from 'react'
 import { Modal,Box,Card, InputAdornment, Typography, IconButton,TextField,CardContent,Avatar,CardActions, Divider } from '@mui/material'
 import SimpleImageSlider from "react-simple-image-slider";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -18,6 +18,7 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
     const [showPicker, setShowPicker] = useState(false)
     const [Comment,setComment] = useState('')
     const [ReplyId,setReplyId] = useState('')
+    const [displayReply,setdisplayReply] = useState<any>([])
     
 
     const fetchCurrentPost = async() =>
@@ -29,6 +30,13 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
             return `http://192.168.0.22:8080/${Img.path}`
             
         })
+
+        res.comments.map((Comment:any,ind:any)=>
+        {
+            displayReply[ind] = false
+        })
+        setdisplayReply(displayReply)
+
         setUrl(Url)
         setCurrentPost(res)
     }
@@ -45,7 +53,7 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
         setComment(Comment+emojiObject.emoji)
         setShowPicker(false);
     }
-
+    
     //---------------------------------WHEN USER COMMENTS THE POST-----------------------------------
     const handlePost = async() =>
     {
@@ -78,13 +86,56 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
         fetchCurrentPost()
     }
 
+    //---------------------------------WHEN USER LIKES TO THE COMMENT---------------------------------
+    const handleLikeToReply = async(commentId:any,replyId) => 
+    {
+        console.log('hi')
+        let res = await put(`http://localhost:8080/posts/likeReply/${CurrentPost._id}/${commentId}/${replyId}`)
+        console.log(res)
+        fetchPost()
+        fetchCurrentPost()
+    }
+
     //--------------------------------WHEN USER REPLY TO COMMENT-------------------------------------
     const handleReply = async(commentId:any,userName:any) => 
     {
         setComment(`@${userName}_`)
         setReplyId(commentId)
     }
-    console.log(Comment)
+    
+
+    //------------------------------------WHEN USER WANTS TO HIDE REPLY----------------------------
+    const handleHideReply = (ind:any) => 
+    {
+        let temp1:any =  document.getElementById(`Reply${ind}`)
+        let temp2:any = document.getElementById(`AllReplies${ind}`)
+
+        let temp3:any = document.getElementById(`cursor${ind}`)
+
+        temp1.style.display = "block"
+        temp2.style.display = "none"
+        temp3.style.cursor = "default"
+
+        displayReply[ind] = false
+        setdisplayReply(displayReply)
+    }
+    console.log(displayReply)
+    //-----------------------------------------WHEN USER WANTS DISPLAY REPLY-------------------------
+    const handleDisplayReply = (ind:any) =>
+    {
+        let temp1:any = document.getElementById(`Reply${ind}`)
+        let temp2:any = document.getElementById(`AllReplies${ind}`)
+        let temp3:any = document.getElementById(`cursor${ind}`)
+
+        temp1.style.display = "none"
+        temp2.style.display = "flex"
+
+        temp3.style.cursor = "pointer"
+        displayReply[ind] = true
+        setdisplayReply(displayReply)
+        console.log(displayReply)
+        
+    }
 
     return (
         <div>
@@ -137,38 +188,72 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
                                 </div>
                                 <Divider sx={{width:'100%',mt:1.5}} />
 
-                                <div style={{height:'17.5rem'}}>
+                                <div style={{height:'17.5rem',overflowY:'scroll'}}  >
                                     {
-                                        CurrentPost.comments.map((comment:any)=>
-                                        <div key={comment._id} style={{marginTop:'20px',display:'flex'}}>
-                                            <Avatar aria-label="recipe" src={`http://192.168.0.22:8080/${comment.createdBy.profileImg}`}/>
-                                            
-                                            <div style={{display:'block'}}>
-                                            
-                                                <div style={{display:'flex'}}>
-                                                    <Typography sx={{color:'#212B36',ml:2,fontWeight:600,fontSize:'14px'}}> {comment.createdBy.name}</Typography>
-                                                    <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px'}}> {comment.comment}</Typography>
-                                                    
-                                                    <FavoriteIcon onClick={()=>handleLikeToComment(comment._id)} style={{ cursor:'pointer',color:`${comment.likes.includes(CurrentUser._id) ? "red" : "gray"}`}}></FavoriteIcon>
+                                        CurrentPost.comments.map((comment:any,ind:any)=>
+
+                                        <Fragment key={comment._id}>
+
+                                            <div id={`cursor${ind}`} style={{marginTop:'20px',display:'flex'}} onClick={()=> displayReply[ind] && handleHideReply(ind)}>
+                                                <Avatar aria-label="recipe" src={`http://192.168.0.22:8080/${comment.createdBy.profileImg}`}/>
                                                 
-                                                    <div style={comment.likes.length!=0 ? {display:'block',position:'absolute',right:'3%',paddingTop:'1.4rem',fontSize:'14px'} : {display:'none'}}> 
-                                                        {comment.likes.length} like
+                                                <div style={{display:'block'}}>
+                                                
+                                                    <div style={{display:'flex'}}>
+                                                        <Typography sx={{color:'#212B36',ml:2,fontWeight:600,fontSize:'14px'}}> {comment.createdBy.name}</Typography>
+                                                        <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px'}}> {comment.comment}</Typography>
+                                                        
+                                                        <FavoriteIcon onClick={()=>handleLikeToComment(comment._id)} style={{ cursor:'pointer',color:`${comment.likes.includes(CurrentUser._id) ? "red" : "gray"}`}}></FavoriteIcon>
+                                                    
+                                                        <div style={comment.likes.length!=0 ? {display:'block',paddingTop:'1.4rem',fontSize:'14px'} : {display:'none'}}> 
+                                                            {comment.likes.length} like
+                                                        </div>
+                                                    </div>
+
+                                                    <div style={{display:'flex'}}>
+                                                        <Typography sx={{color:'#637381',ml:2,mt:-2,fontWeight:400,fontSize:'12px'}}> {moment(comment.createdAt).fromNow()}</Typography>
+                                                        <Typography sx={{color:'#637381',ml:2,mt:-2,fontWeight:400,fontSize:'12px',cursor:'pointer'}} onClick={()=> handleReply(comment._id,comment.createdBy.name)}> Reply </Typography>
                                                     </div>
                                                 </div>
-
-                                                <div style={{display:'flex'}}>
-                                                    <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px'}}> {moment(comment.createdAt).fromNow()}</Typography>
-                                                    <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px',cursor:'pointer'}} onClick={()=> handleReply(comment._id,comment.createdBy.name)}> Reply </Typography>
-                                                </div>
-
-                                                <div>
-                                                    <Typography sx={comment.reply.length!=0 ? {color:'#637381',ml:2,mt:1,fontWeight:400,fontSize:'12px',cursor:'pointer'}:{display:'none'}}> -- {comment && comment.reply.length} Replies </Typography>
-                                                </div>
                                             </div>
-                                        </div>
+
+                                            <div  style={{marginLeft:'2.5rem'}}>
+
+                                                <Typography id={`Reply${ind}`} sx={comment.reply.length!=0 ? {color:'#637381',ml:2,fontWeight:400,fontSize:'12px',cursor:'pointer'}:{display:'none'}} onClick={()=>handleDisplayReply(ind)}> -- &nbsp; {comment && comment.reply.length} Replies </Typography>
+                                                
+                                                {comment.reply.map((reply:any)=>
+                                                    
+                                                    <div key={reply._id} id={`AllReplies${ind}`} style={{marginTop:'20px',display:'none'}} >
+                                                        <Avatar aria-label="recipe" src={`http://192.168.0.22:8080/${reply.repliedBy.profileImg}`}/>
+                                                        
+                                                        <div style={{display:'block'}}>
+                                                        
+                                                            <div style={{display:'flex'}}>
+                                                                <Typography sx={{color:'#212B36',ml:2,fontWeight:600,fontSize:'14px'}}> {reply.repliedBy.name}</Typography>
+                                                                <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px'}}> {reply.comment}</Typography>
+                                                                
+                                                                <FavoriteIcon onClick={()=>handleLikeToReply(comment._id,reply._id)} style={{ cursor:'pointer',color:`${reply.likes.includes(CurrentUser._id) ? "red" : "gray"}`}}></FavoriteIcon>
+                                                            
+                                                                <div style={comment.likes.length!=0 ? {display:'block',paddingTop:'1.4rem',fontSize:'14px'} : {display:'none'}}> 
+                                                                    {reply.likes.length} like
+                                                                </div>
+                                                            </div>
+
+                                                            <div style={{display:'flex'}}>
+                                                                <Typography sx={{color:'#637381',ml:2,mt:-2,fontWeight:400,fontSize:'12px'}}> {moment(reply.repliedAt).fromNow()}</Typography>
+                                                                {/* <Typography sx={{color:'#637381',ml:2,mt:-2,fontWeight:400,fontSize:'12px',cursor:'pointer'}} onClick={()=> handleReply(comment._id,comment.createdBy.name)}> Reply </Typography> */}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </Fragment>
                                     )}
                                 </div>
-
+                               
+                                
+               
+                                
                                 <CardActions>
 
                                     <IconButton aria-label="add to favorites" onClick={()=>handleLikes(CurrentPost._id)} >
@@ -225,13 +310,9 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
                         
                                 </CardActions>
                             </CardContent>
-
                             
                         </div>
                     </Card>
-
-                    
-                        
                 </Box>
             </Modal>
             }

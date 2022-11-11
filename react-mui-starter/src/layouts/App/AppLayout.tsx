@@ -12,6 +12,7 @@ export default function AppLayout(props: any) {
       <Navbar
         onLogout={() => {
           authenticationService.localLogout();
+          localStorage.clear()
         }}
       />
       <Router history={history}>

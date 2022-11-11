@@ -26,3 +26,23 @@
     box-shadow: 24;
     padding: 4;
 }
+
+.addModal{
+    display: flex;
+    flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
+    padding: 0px;
+    width:632px;
+    height:600px;
+    margin:auto;
+    margin-top: 80px;
+    // gap: 120px;
+    // position: absolute;
+    left:35%;
+    // right: 0%;
+     top: 55%;
+    // bottom: 0%;
+    background: #FFFFFF;
+    border-radius: 8px;
+    }

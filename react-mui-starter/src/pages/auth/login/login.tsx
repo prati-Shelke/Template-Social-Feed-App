@@ -17,6 +17,8 @@ import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
 import {GoogleLogin} from 'react-google-login'
 import history from "../../../routes/history";
+import { get,post,put } from '../../../utils/http/httpMethods';
+
 
 
 function Login() 
@@ -41,6 +43,24 @@ function Login()
         });
     };
     
+
+    const responseGoogle = async(response:any) =>
+    {
+        let id_token = response.tokenObj.id_token
+        let loginDetails = {idToken : id_token }
+
+        try {
+            const data = await post('/auth/google',loginDetails)
+            console.log(data);
+
+            // localStorage.setItem('googleToken' , JSON.stringify(data.token))
+            history.push('/home')
+        } 
+        catch (err:any) {
+            console.log(`Error: ${err.message}`);
+        }
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs" >
@@ -109,10 +129,10 @@ function Login()
 
                                 <Grid textAlign="center" sx={{color: "rgba(145, 158, 171, 0.8)",fontSize:'15px',marginBottom:"-50px"}}>
                                     <GoogleLogin 
-                                        clientId = "971623344603-0qquan9pcdb9iu7oq9genvpnel77i7oa.apps.googleusercontent.com"
+                                        clientId = "1091804389859-rj6kfpbml7m29i03rlebhfbbnol0774m.apps.googleusercontent.com"
                                         buttonText = "Sign in with Google"
-                                        // onSuccess = {responseGoogle}
-                                        // onFailure = {responseGoogle}
+                                        onSuccess = {responseGoogle}
+                                        onFailure = {responseGoogle}
                                         cookiePolicy = {'single_host_origin'}                
                                     />
                                 </Grid> 

@@ -6,7 +6,7 @@ import uploadImg from './bro.jpg'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import PreviewChildModal from './PreviewChildModal'
 
-function UploadPost({UploadPostOpen,setUploadPostOpen}:any) 
+function UploadPost({UploadPostOpen,setUploadPostOpen,setcurrentTab}:any) 
 {
     const [PreviewChildModalOpen,setPreviewChildModalOpen] = useState(false)
     const [UploadedFile,setUploadedFile] = useState({file:[],filePreview:[]})
@@ -31,7 +31,7 @@ function UploadPost({UploadPostOpen,setUploadPostOpen}:any)
             <Modal
                 disableAutoFocus={true}
                 open={UploadPostOpen}
-                onClose={()=>setUploadPostOpen(false)}
+                onClose={()=>{setUploadPostOpen(false);setcurrentTab('home')}}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
                 
@@ -40,7 +40,7 @@ function UploadPost({UploadPostOpen,setUploadPostOpen}:any)
 
                     <Card id='UploadPostCard'>
                         
-                        <IconButton sx={{float:'right'}} onClick={()=>{setUploadedFile({file:[],filePreview:[]});setUploadPostOpen(false)}}>
+                        <IconButton sx={{float:'right'}} onClick={()=>{setUploadedFile({file:[],filePreview:[]});setUploadPostOpen(false);setcurrentTab('home')}}>
                             <CloseOutlinedIcon sx={{color:'#919EAB'}}> </CloseOutlinedIcon>
                         </IconButton>
                        

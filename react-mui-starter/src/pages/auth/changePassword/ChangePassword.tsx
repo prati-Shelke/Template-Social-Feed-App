@@ -11,7 +11,7 @@ const ChangePassword = ({ChangePasswordOpen,setChangePasswordOpen}:any) =>
 
     const handleChangePassword = async() =>
     {
-        let resp = await post(`http://192.168.0.22:8080/auth/change-password`,Obj)
+        let resp = await post(`http://localhost:8080/auth/change-password`,Obj)
         console.log(resp)
         setChangePasswordOpen(false)
         

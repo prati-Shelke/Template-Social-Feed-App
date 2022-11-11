@@ -27,6 +27,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
  */
 const loginWithGoogle = async (userBody) => 
 {
+  console.log("hi")
   const ticket = await client.verifyIdToken({
     idToken: userBody.idToken,
     requiredAudience: `${config.google_client_id}`,

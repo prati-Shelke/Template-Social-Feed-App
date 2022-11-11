@@ -1,23 +1,27 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import "./Navbar.scss";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import logo from './logo.jpeg'
+import logo from './logo.png'
 import { Box } from '@mui/system';
 import HomeIcon from '@mui/icons-material/Home';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { IconButton } from '@mui/material';
 import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { Avatar } from '@mui/material';
 import { Menu } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import LockResetOutlinedIcon from '@mui/icons-material/LockResetOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import EditProfile from '../../pages/home/EditProfile'
 import { Divider } from '@mui/material';
 import ChangePassword from '../../pages/auth/changePassword/ChangePassword';
 import UploadPost from '../../pages/post/uploadPost';
+import history from "../../routes/history"
 
 export type NavbarProps = {
   /**
@@ -34,12 +38,14 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
     let [EditProfileOpen,setEditProfileOpen] = useState(false)
     let [ChangePasswordOpen,setChangePasswordOpen] = useState(false)
     let [UploadPostOpen,setUploadPostOpen] = useState(false)
+    let [currentTab,setcurrentTab] = useState((JSON.parse(localStorage.getItem('currentTab') as any))||"home")
+
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => 
     {
         setAnchorEl(event.currentTarget);
     }
-    
+
     const handleClose = () => 
     {
         setAnchorEl(null);
@@ -61,7 +67,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
     }
     
     
-    
+
     return (
         <Box >
             <AppBar color='transparent' position="static" >
@@ -71,29 +77,29 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                     <img src={logo} style={{width: '25px',height: "25px",float:'left'}}/> &nbsp;
 
                     <a style={{fontSize:'20px',fontWeight:600}}>
-                            Life@AM
+                            Instagram
                     </a>
                 </div>
             
                 <Box sx={{flexGrow:1,fontFamily:'Public sans'}}></Box>
                     <div style={{display:"flex",marginRight:'180px'}}>
-                        <IconButton edge="start" color="inherit" aria-label="menu" >
-                            <HomeIcon ></HomeIcon>
+                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={()=>{setcurrentTab("home");localStorage.setItem("currentTab",JSON.stringify("home"));history.push("/home");window.location.reload()}}>
+                            {currentTab === "home" ? <HomeIcon/> : <HomeOutlinedIcon/> }
                         </IconButton> &nbsp;
                         
-                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={()=>setUploadPostOpen(true)}>
-                            <AddAPhotoOutlinedIcon ></AddAPhotoOutlinedIcon>
+                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={()=>{setcurrentTab("photo");localStorage.setItem("currentTab",JSON.stringify("photo"));setUploadPostOpen(true)}}>
+                            {currentTab === "photo" ?  <AddAPhotoIcon/> : <AddAPhotoOutlinedIcon />}
                         </IconButton> &nbsp;
                         
-                        <IconButton edge="start" color="inherit" aria-label="menu" >
-                            <BookmarkBorderOutlinedIcon ></BookmarkBorderOutlinedIcon>
+                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={()=>{setcurrentTab("bookmark");localStorage.setItem("currentTab",JSON.stringify("bookmark"));history.push("/bookmark");window.location.reload()}}>
+                            {currentTab === "bookmark" ? <BookmarkIcon/> : <BookmarkBorderOutlinedIcon/> }
                         </IconButton>&nbsp;
 
                         <div style={{display:'flex',alignItems:'center',cursor:'pointer'}} >
                             <Avatar 
                                 sx={{width: "28px",height: "28px"}}
                                 onClick={handleMenu}
-                                src={`http://192.168.0.22:8080/${CurrentUser.profileImg}`}
+                                src={`http://localhost:8080/${CurrentUser.profileImg}`}
                             /> 
                             
                             <a style={{paddingLeft:'4px',fontSize:'18px',fontWeight:600,fontFamily:'Public sans'}}>{CurrentUser.name}</a>
@@ -159,7 +165,7 @@ export const Navbar = ({ onLogout }: NavbarProps)  =>
                 </Toolbar>
                     {EditProfileOpen==true && <EditProfile EditProfileOpen handleEditProfileClose={handleEditProfileClose}/>}
                     {ChangePasswordOpen==true && <ChangePassword ChangePasswordOpen setChangePasswordOpen={setChangePasswordOpen}/>}
-                    <UploadPost UploadPostOpen={UploadPostOpen} setUploadPostOpen={setUploadPostOpen}/>
+                    <UploadPost UploadPostOpen={UploadPostOpen} setUploadPostOpen={setUploadPostOpen} setcurrentTab={setcurrentTab}/>
             </AppBar>
         </Box>
     )

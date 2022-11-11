@@ -1,5 +1,5 @@
 import React,{useState,useEffect, Fragment} from 'react'
-import { Modal,Box,Card, InputAdornment, Typography, IconButton,TextField,CardContent,Avatar,CardActions, Divider } from '@mui/material'
+import { Modal,Box,Card, InputAdornment, Typography, IconButton,TextField,CardContent,Avatar,CardActions, Divider, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
 import SimpleImageSlider from "react-simple-image-slider";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import Picker from 'emoji-picker-react';
@@ -24,11 +24,10 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
     const fetchCurrentPost = async() =>
     {
         
-        let res:any = await get(`http://192.168.0.22:8080/posts/getPostById/${CurrentPostId}`)
+        let res:any = await get(`http://localhost:8080/posts/getPostById/${CurrentPostId}`)
         Url = res.postImg.map((Img:any)=>
         {
-            return `http://192.168.0.22:8080/${Img.path}`
-            
+            return `http://localhost:8080/${Img.path}`
         })
 
         res.comments.map((Comment:any,ind:any)=>
@@ -87,7 +86,7 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
     }
 
     //---------------------------------WHEN USER LIKES TO THE COMMENT---------------------------------
-    const handleLikeToReply = async(commentId:any,replyId) => 
+    const handleLikeToReply = async(commentId:any,replyId:any) => 
     {
         console.log('hi')
         let res = await put(`http://localhost:8080/posts/likeReply/${CurrentPost._id}/${commentId}/${replyId}`)
@@ -119,7 +118,7 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
         displayReply[ind] = false
         setdisplayReply(displayReply)
     }
-    console.log(displayReply)
+
     //-----------------------------------------WHEN USER WANTS DISPLAY REPLY-------------------------
     const handleDisplayReply = (ind:any) =>
     {
@@ -127,8 +126,15 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
         let temp2:any = document.getElementById(`AllReplies${ind}`)
         let temp3:any = document.getElementById(`cursor${ind}`)
 
-        temp1.style.display = "none"
-        temp2.style.display = "flex"
+        // temp1.style.display = "none"
+        if(temp2.style.display == "flex")
+        {
+            temp2.style.display = "none"
+        }
+        else
+        {
+            temp2.style.display = "flex"
+        }
 
         temp3.style.cursor = "pointer"
         displayReply[ind] = true
@@ -162,7 +168,7 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
                                     showBullets={true}
                                     showNavs={true}     
                                 /> :
-                                <img alt="not found" src={Url} height={530} width={510} />
+                                <img alt="not found" src={Url as any} height={530} width={510} />
                             }
 
                             <CardContent>
@@ -174,7 +180,7 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
                                         (
                                             <div  key={user._id} style={{display:'flex'}}>
                                                 <Avatar aria-label="recipe"
-                                                src={`http://192.168.0.22:8080/${user.profileImg}`}>
+                                                src={`http://localhost:8080/${user.profileImg}`}>
                                                 </Avatar>
 
                                                 <div style={{display:'flex',flexDirection:'column'}}>
@@ -194,28 +200,32 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
 
                                         <Fragment key={comment._id}>
 
-                                            <div id={`cursor${ind}`} style={{marginTop:'20px',display:'flex'}} onClick={()=> displayReply[ind] && handleHideReply(ind)}>
-                                                <Avatar aria-label="recipe" src={`http://192.168.0.22:8080/${comment.createdBy.profileImg}`}/>
-                                                
-                                                <div style={{display:'block'}}>
+                                            <ListItem id={`cursor${ind}`} style={{marginTop:'20px',display:'flex'}} onClick={()=> displayReply[ind] && handleHideReply(ind)}>
+
+                                                <ListItemAvatar>
+                                                    <Avatar aria-label="recipe" src={`http://localhost:8080/${comment.createdBy.profileImg}`}/>
+                                                </ListItemAvatar>
+
+                                                <ListItemText>
                                                 
                                                     <div style={{display:'flex'}}>
                                                         <Typography sx={{color:'#212B36',ml:2,fontWeight:600,fontSize:'14px'}}> {comment.createdBy.name}</Typography>
                                                         <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px'}}> {comment.comment}</Typography>
-                                                        
-                                                        <FavoriteIcon onClick={()=>handleLikeToComment(comment._id)} style={{ cursor:'pointer',color:`${comment.likes.includes(CurrentUser._id) ? "red" : "gray"}`}}></FavoriteIcon>
-                                                    
-                                                        <div style={comment.likes.length!=0 ? {display:'block',paddingTop:'1.4rem',fontSize:'14px'} : {display:'none'}}> 
-                                                            {comment.likes.length} like
-                                                        </div>
                                                     </div>
 
                                                     <div style={{display:'flex'}}>
-                                                        <Typography sx={{color:'#637381',ml:2,mt:-2,fontWeight:400,fontSize:'12px'}}> {moment(comment.createdAt).fromNow()}</Typography>
-                                                        <Typography sx={{color:'#637381',ml:2,mt:-2,fontWeight:400,fontSize:'12px',cursor:'pointer'}} onClick={()=> handleReply(comment._id,comment.createdBy.name)}> Reply </Typography>
+                                                        <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px'}}> {moment(comment.createdAt).fromNow()}</Typography>
+                                                        <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px',cursor:'pointer'}} onClick={()=> handleReply(comment._id,comment.createdBy.name)}> Reply </Typography>
                                                     </div>
+                                                </ListItemText>
+
+                                                <div style={{display:'flex',flexDirection:'column'}}>
+                                                <FavoriteIcon onClick={()=>handleLikeToComment(comment._id)} style={{ cursor:'pointer',color:`${comment.likes.includes(CurrentUser._id) ? "red" : "gray"}`}}></FavoriteIcon>
+                                                    <Typography style={comment.likes.length!=0 ? {display:'block',fontSize:'14px'} : {display:'none'}}> 
+                                                        {comment.likes.length} like
+                                                    </Typography>
                                                 </div>
-                                            </div>
+                                            </ListItem>
 
                                             <div  style={{marginLeft:'2.5rem'}}>
 
@@ -223,28 +233,32 @@ function CommentModal({CurrentPostId,CommentModalOpen,setCommentModalOpen,AllUse
                                                 
                                                 {comment.reply.map((reply:any)=>
                                                     
-                                                    <div key={reply._id} id={`AllReplies${ind}`} style={{marginTop:'20px',display:'none'}} >
-                                                        <Avatar aria-label="recipe" src={`http://192.168.0.22:8080/${reply.repliedBy.profileImg}`}/>
-                                                        
-                                                        <div style={{display:'block'}}>
-                                                        
+                                                    <ListItem key={reply._id} id={`AllReplies${ind}`} style={{display:'none'}}>
+                                                        <ListItemAvatar>
+                                                            <Avatar aria-label="recipe" src={`http://localhost:8080/${reply.repliedBy.profileImg}`}/>
+                                                        </ListItemAvatar>
+
+                                                        <ListItemText>
                                                             <div style={{display:'flex'}}>
                                                                 <Typography sx={{color:'#212B36',ml:2,fontWeight:600,fontSize:'14px'}}> {reply.repliedBy.name}</Typography>
                                                                 <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px'}}> {reply.comment}</Typography>
                                                                 
-                                                                <FavoriteIcon onClick={()=>handleLikeToReply(comment._id,reply._id)} style={{ cursor:'pointer',color:`${reply.likes.includes(CurrentUser._id) ? "red" : "gray"}`}}></FavoriteIcon>
-                                                            
-                                                                <div style={comment.likes.length!=0 ? {display:'block',paddingTop:'1.4rem',fontSize:'14px'} : {display:'none'}}> 
-                                                                    {reply.likes.length} like
-                                                                </div>
                                                             </div>
 
                                                             <div style={{display:'flex'}}>
-                                                                <Typography sx={{color:'#637381',ml:2,mt:-2,fontWeight:400,fontSize:'12px'}}> {moment(reply.repliedAt).fromNow()}</Typography>
+                                                                <Typography sx={{color:'#637381',ml:2,fontWeight:400,fontSize:'12px'}}> {moment(reply.repliedAt).fromNow()}</Typography>
                                                                 {/* <Typography sx={{color:'#637381',ml:2,mt:-2,fontWeight:400,fontSize:'12px',cursor:'pointer'}} onClick={()=> handleReply(comment._id,comment.createdBy.name)}> Reply </Typography> */}
                                                             </div>
+                                                        </ListItemText>
+
+                                                        <div style={{display:'flex',flexDirection:'column'}}>
+                                                            <FavoriteIcon onClick={()=>handleLikeToReply(comment._id,reply._id)} style={{ cursor:'pointer',color:`${reply.likes.includes(CurrentUser._id) ? "red" : "gray"}`}}></FavoriteIcon>
+                                                                
+                                                                <Typography style={reply.likes.length!=0 ? {display:'block',fontSize:'12px'} : {display:'none'}}> 
+                                                                    {reply.likes.length} like
+                                                                </Typography>
                                                         </div>
-                                                    </div>
+                                                    </ListItem>
                                                 )}
                                             </div>
                                         </Fragment>

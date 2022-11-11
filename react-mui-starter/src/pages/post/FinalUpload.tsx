@@ -9,7 +9,7 @@ import './post.scss'
 import { post } from '../../utils/http/httpMethods';
 import Uploading from './Uploading';
 
-function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen,setFinalUploadOpen,UploadedFile,setUploadedFile}:any) 
+function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen,setFinalUploadOpen,UploadedFile,setUploadedFile,closeModal}:any) 
 {
     const [Preview,setPreview] = useState([])
     const [CurrentUser,setCurrentUser] = useState((JSON.parse(localStorage.getItem('currentUser') as any))||{})
@@ -17,8 +17,9 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
     const fileRef:any = useRef()
     const [Caption,setCaption] = useState('')
     const [Location,setLocation] = useState('')
-    const [UploadingOpen,setUploadingOpen] = useState(false)
-    
+    let [UploadingOpen,setUploadingOpen] = useState(false)
+    const [Progress,setProgress] = useState(0)
+
     const handlePreview = () =>
     {
         let temp = UploadedFile.filePreview.map((path:any)=>
@@ -69,7 +70,17 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
     const handleUploadPost = async() =>
     {
         // setUploadingOpen(true)
-        
+        let options = 
+        {
+            onUploadProgress: (progressEvent: any) => {
+              const { loaded, total } = progressEvent;
+              let percent:any = Math.floor((loaded * 100) / total);
+              if (percent < 100) {
+                setProgress(percent);
+              }
+            },
+        };
+
         let formdata = new FormData()
 
         let temp = UploadedFile.file.map((img:any)=>{ return img})
@@ -81,11 +92,36 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
         formdata.append('caption',Caption)
         formdata.append('location',Location)
         
-        let res = await post('http://localhost:8080/posts',formdata)
+        let res = await post('http://localhost:8080/posts',formdata,options)
         console.log(res)
-        setUploadPostOpen(false)
-        setPreviewChildModalOpen(false)
-        setFinalUploadOpen(false)
+        if (res) 
+        {
+            setUploadingOpen(true)
+
+            setTimeout(() => 
+            {
+
+                setPreviewChildModalOpen(false)
+                setUploadPostOpen(false)
+            }, 0);
+
+            setTimeout(() => 
+            {
+              setProgress(100);
+            }, 1000);
+
+            setTimeout(() => 
+            {
+                
+                setUploadingOpen(false)
+            }, 2000);
+
+            setTimeout(() => 
+            {
+                closeModal()
+            }, 2000);
+        }
+        
         window.location.reload()
     }
    
@@ -119,14 +155,14 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
                                     showNavs={true}  
                                     style={{marginTop:'20px'}}          
                                 /> :
-                                <img alt="not found" src={Preview} style={{marginTop:'10px'}} height={480} width={520} />
+                                <img alt="not found" src={Preview as any} style={{marginTop:'10px'}} height={480} width={520} />
                             }
 
                             <CardContent>
 
                                 <div style={{display:'flex'}}>
                                     <Avatar aria-label="recipe"
-                                        src={`http://192.168.0.22:8080/${CurrentUser.profileImg}`}>
+                                        src={`http://localhost:8080/${CurrentUser.profileImg}`}>
                                     </Avatar>
                                     <Typography sx={{mt:1,ml:2,fontWeight:600}}> {CurrentUser.name}</Typography>
                                 </div>
@@ -181,7 +217,7 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
                         </div>
                     </Card>
 
-                    <Uploading UploadingOpen={UploadingOpen} setUploadingOpen={setUploadingOpen} setFinalUploadOpen={setFinalUploadOpen}/>
+                    <Uploading UploadingOpen={UploadingOpen} setUploadingOpen={setUploadingOpen} progress={Progress}/>
                         
                 </Box>
             </Modal>

@@ -18,9 +18,10 @@ function ForgotPassword()
     {   
         // console.log(Email)
         return post("http://localhost:8080/auth/forgot-password",{email:Email})
-        .then((res)=>
+        .then((res:any)=>
                     {   
                         console.log("Email is sent",res)
+                        localStorage.setItem('resetPasswordToken',JSON.stringify(res?.token))
                         history.push("/auth/login")
                         window.location.reload()
                     }

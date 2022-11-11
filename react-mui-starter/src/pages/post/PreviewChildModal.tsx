@@ -20,6 +20,12 @@ function PreviewChildModal({setUploadPostOpen,PreviewChildModalOpen,setPreviewCh
         setPreview(temp)
     }, [PreviewChildModalOpen])    
 
+    const closeModal = () =>
+    {
+        setUploadPostOpen(false)
+        console.log("hi")
+    }
+
     return (
         <div>
             <Modal
@@ -55,7 +61,7 @@ function PreviewChildModal({setUploadPostOpen,PreviewChildModalOpen,setPreviewCh
                         }
                         </Card>
                         <DiscardProcess setPreviewChildModalOpen={setPreviewChildModalOpen} DiscardProcessOpen={DiscardProcessOpen} setDiscardProcessOpen={setDiscardProcessOpen} setUploadedFile={setUploadedFile} />
-                        <FinalUpload setUploadPostOpen={setUploadPostOpen} setPreviewChildModalOpen={setPreviewChildModalOpen} FinalUploadOpen={FinalUploadOpen} setFinalUploadOpen={setFinalUploadOpen} UploadedFile={UploadedFile} setUploadedFile={setUploadedFile} />
+                        <FinalUpload setUploadPostOpen={setUploadPostOpen} setPreviewChildModalOpen={setPreviewChildModalOpen} FinalUploadOpen={FinalUploadOpen} setFinalUploadOpen={setFinalUploadOpen} UploadedFile={UploadedFile} setUploadedFile={setUploadedFile} closeModal={closeModal}/>
                 </Box>
             </Modal>
         </div>

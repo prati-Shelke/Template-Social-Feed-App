@@ -41,7 +41,7 @@ function Home()
     //-------------------------------FOR GETTING ALL POSTS----------------------------------------
     const fetchPost = async() =>
     {
-        return get("http://localhost:8080/posts/getPosts?sortBy=desc&limit=200&page=1")
+        return get("http://localhost:8080/posts/getPosts?limit=200&page=1")
         .then((res:any)=>
             {   
                 setAllPosts(res.results)
@@ -52,7 +52,7 @@ function Home()
                 {
                     return post.postImg.map((Img:any)=>
                     {
-                        return `http://192.168.0.22:8080/${Img.path}`
+                        return `http://localhost:8080/${Img.path}`
                     })
                 })
                 setUrl(Url)
@@ -85,7 +85,7 @@ function Home()
         fetchUser()
     }, [])
 
-    
+    console.log(AllPosts)
  
     const onEmojiClick = (event:React.MouseEvent< Element,MouseEvent>, emojiObject:any) =>
     {
@@ -125,14 +125,14 @@ function Home()
     return (
         <Container maxWidth="sm" >
             {AllPosts && AllPosts.map((post:any,ind:any) =>
-                <Card key={post._id} id="postCard" sx={{marginTop:'40px'}}>
+                <Card key={post._id} id="postCard" sx={{marginTop:'40px', maxWidth: 445 }} >
                     { AllUsers && AllUsers.map((user:any,ind) =>
                         user._id === post.createdBy &&
                         (<CardHeader
                             key={user._id}
                             avatar={
                                 <Avatar aria-label="recipe"
-                                    src={`http://192.168.0.22:8080/${user.profileImg}`}>
+                                    src={`http://localhost:8080/${user.profileImg}`}>
                                 </Avatar>
                             }
                             action={
@@ -151,17 +151,17 @@ function Home()
                             (<CardMedia
                                 key={post._id}
                                 component="img"
-                                height="194"
-                                image={`http://192.168.0.22:8080/${img.path}`}
+                                height="400"
+                                image={`http://localhost:8080/${img.path}`}
                                 alt="Paella dish"
-                                sx={{width: "508px",height: "508px"}}
+                                // sx={{width: "508px",height: "508px"}}        
                             />))
                         :
                             (
                                 <SimpleImageSlider
                                     // key={}
-                                    width={508}
-                                    height={468}
+                                    width={445}
+                                    height={400}
                                     images={Url[ind]}
                                     showBullets={true}
                                     showNavs={true}
@@ -181,7 +181,7 @@ function Home()
                             <ChatBubbleOutlineIcon id='commentIcon' ></ChatBubbleOutlineIcon>
                         </IconButton>
 
-                        <IconButton aria-label="share" sx={{marginLeft:'365px'}} onClick={()=>handleBookmark(post._id)}>
+                        <IconButton aria-label="share" edge="end" className="d-flex justify-content-end" onClick={()=>handleBookmark(post._id)}>
                             <BookmarkIcon sx={post.bookmarks.includes(CurrentUser._id)? {color:"black"} : {color:''}} ></BookmarkIcon>
                         </IconButton>
 
@@ -229,7 +229,7 @@ function Home()
                                 />
                             )}
                         <TextField 
-                            sx={{paddingLeft:'10px',width:'28rem'}} 
+                            sx={{paddingLeft:'10px',width:'24rem'}} 
                             InputProps={{disableUnderline: true,endAdornment: (
                                 <InputAdornment position="end">
                                   <IconButton

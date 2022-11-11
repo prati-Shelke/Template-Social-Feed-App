@@ -106,7 +106,7 @@ const EditProfile = ({EditProfileOpen,handleEditProfileClose}:any) =>
                         </Typography>
 
                         <div style={{marginTop:'-10px',cursor:'pointer'}} onClick={handleMenu}  >
-                            <Avatar sx={{width:'80px',height:'80px'}} src={ImageFile===false ? `http://192.168.0.22:8080/${CurrentUser.profileImg}` : Preview} />
+                            <Avatar sx={{width:'80px',height:'80px'}} src={ImageFile===false ? `http://localhost:8080/${CurrentUser.profileImg}` : Preview} />
                             <IconButton edge="start" color="inherit" aria-label="menu" sx={{marginLeft:'50px',marginTop:'-50px'}}>
                                 <AddAPhotoRoundedIcon color='primary' sx={{backgroundColor:'white',padding:'5px',borderRadius:"50%",border:'2px solid #DCE0E4'}}></AddAPhotoRoundedIcon>
                             </IconButton>

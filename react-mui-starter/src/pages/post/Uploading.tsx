@@ -3,6 +3,7 @@ import React,{useState,useEffect} from 'react'
 import CloseIcon from "@mui/icons-material/Close";
 import bro from "./bro.jpg"
 import LinearProgress from '@mui/material/LinearProgress';
+import { Toast } from '../../utils/toastUtil';
 interface booleanProps{
     UploadingOpen:boolean,
     setUploadingOpen:any,
@@ -17,7 +18,6 @@ function Uploading({UploadingOpen,setUploadingOpen,progress}:booleanProps)
         setcurrentTab('home');
         localStorage.setItem("currentTab",JSON.stringify("home"))
     }, [UploadingOpen])
-    
     
     
 

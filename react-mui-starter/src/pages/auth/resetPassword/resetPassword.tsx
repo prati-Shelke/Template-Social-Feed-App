@@ -3,21 +3,35 @@ import { Box, Button, Card, Container, TextField, Typography } from '@mui/materi
 import './resetPassword.scss'
 import { post } from '../../../utils/http/httpMethods';
 import history from "../../../routes/history";
+import { Toast } from '../../../utils/toastUtil';
 
 function ResetPassword() 
 {
     let [newPassword,setnewPassword] = useState('')
+    let [confirmPassword,setconfirmPassword] = useState('')
     let [token,setToken] = useState(JSON.parse(localStorage.getItem('resetPasswordToken') as any))||' '
 
     const handleResetPassword = () =>
     {
-        return post(`http://localhost:8080/auth/reset-password?token=${token}`,{password:newPassword})
-        .then((res:any)=>
-                    {   
-                        history.push("/auth/login")
-                        window.location.reload()
-                    }
+        if(confirmPassword === newPassword)
+        {
+            return post(`http://localhost:8080/auth/reset-password?token=${token}`,{password:newPassword})
+            .then((res:any)=>
+                        {   
+                            Toast.success("Password updated successfully.....")
+                            history.push("/auth/login")
+                            window.location.reload()
+                        }
+                ).catch((error)=>
+                Toast.error(
+                    error.message || 'Error occurred !!!'
+                )
             )
+        }
+        else{
+            Toast.error("password not matched!!!!!")
+        }
+       
     }
 
     return(
@@ -48,8 +62,8 @@ function ResetPassword()
                         label="Confirm Password"
                         name="email"
                         type="password"
-                        // value={Email}
-                        // onChange={(e)=>setEmail(e.target.value)}
+                        value={confirmPassword}
+                        onChange={(e)=>setconfirmPassword(e.target.value)}
                     />
 
                     <Button

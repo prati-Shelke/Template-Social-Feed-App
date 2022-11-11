@@ -3,8 +3,8 @@ import { get, post, put } from "./http/httpMethods";
 import Cookie from "js-cookie";
 import history from "../routes/history";
 import { paths } from "../routes/routes.config";
-import { showErrorToast } from "./toastUtil";
 import { defaultUsers } from "../@types/user";
+import { Toast } from "../utils/toastUtil";
 
 let currentUserFromStorage: any;
 
@@ -18,7 +18,7 @@ try {
   //     loadCurrentUser();
   //   }
 } catch (e) {
-  showErrorToast("Could not find user in local storage");
+  Toast.error("Could not find user in local storage");
   logout();
 }
 
@@ -71,15 +71,17 @@ function verifyCredentials(payload: any)
   // });
   return post('/auth/login', payload)
       .then((response: any) => {
-          
+        Toast.success(
+          'Logged in successfully....'
+        )
           handleLogin(response)
           // handleLogin({ token: "AABBCC", user: defaultUsers[0] });
           return response
       })
       .catch((error: any) => {
-        //   showErrorToast(
-        //       error.message || 'Error occurred while validating credentials!'
-        //   )
+          Toast.error(
+              error.message || 'Error occurred while validating credentials!'
+          )
           // handleLogin({ token: "AABBCC", user: defaultUsers[0] });
           return error
       })

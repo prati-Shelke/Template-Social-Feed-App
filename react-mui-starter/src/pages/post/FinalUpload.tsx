@@ -8,6 +8,7 @@ import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
 import './post.scss'
 import { post } from '../../utils/http/httpMethods';
 import Uploading from './Uploading';
+import { Toast } from '../../utils/toastUtil';
 
 function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen,setFinalUploadOpen,UploadedFile,setUploadedFile,closeModal}:any) 
 {
@@ -77,10 +78,10 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
               let percent:any = Math.floor((loaded * 100) / total);
               if (percent < 100) {
                 setProgress(percent);
+                console.log(Progress)
               }
             },
         };
-
         let formdata = new FormData()
 
         let temp = UploadedFile.file.map((img:any)=>{ return img})
@@ -92,37 +93,48 @@ function FinalUpload({setUploadPostOpen,setPreviewChildModalOpen,FinalUploadOpen
         formdata.append('caption',Caption)
         formdata.append('location',Location)
         
-        let res = await post('http://localhost:8080/posts',formdata,options)
-        console.log(res)
-        if (res) 
+        post('http://localhost:8080/posts',formdata,options)
+        .then((res)=>
         {
-            setUploadingOpen(true)
-
-            setTimeout(() => 
+            Toast.success('Post created successfully.....')
+            
+            if (res) 
             {
+                setUploadingOpen(true)
 
-                setPreviewChildModalOpen(false)
-                setUploadPostOpen(false)
-            }, 0);
+                setTimeout(() => 
+                {
 
-            setTimeout(() => 
-            {
-              setProgress(100);
-            }, 1000);
+                    setPreviewChildModalOpen(false)
+                    setUploadPostOpen(false)
+                }, 0);
 
-            setTimeout(() => 
-            {
-                
-                setUploadingOpen(false)
-            }, 2000);
+                setTimeout(() => 
+                {
+                    setProgress(100);
+                }, 1000);
 
-            setTimeout(() => 
-            {
-                closeModal()
-            }, 2000);
-        }
+                setTimeout(() => 
+                {
+                    
+                    setUploadingOpen(false)
+                }, 3000);
+
+                setTimeout(() => 
+                {
+                    closeModal()
+                }, 2000);
+
+                window.location.reload()
+               
+            }
+        }).catch((error)=>
+            Toast.error(
+                error.message || 'Error occurred !!!'
+            )
+        )
+
         
-        window.location.reload()
     }
    
 

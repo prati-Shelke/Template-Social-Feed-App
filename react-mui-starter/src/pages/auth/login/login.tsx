@@ -18,7 +18,7 @@ import Divider from '@mui/material/Divider';
 import {GoogleLogin} from 'react-google-login'
 import history from "../../../routes/history";
 import { get,post,put } from '../../../utils/http/httpMethods';
-
+import { Toast } from "../../../utils/toastUtil";
 
 
 function Login() 
@@ -37,8 +37,10 @@ function Login()
         setButtonDisabled(true);
         authenticationService.verifyCredentials(Obj).then((response: any) => {
             setButtonDisabled(false);
+            // Toast.success("Logged in successfully....")
         })
         .catch((error) => {
+            Toast.error("Please fill the details...")
             setButtonDisabled(false);
         });
     };
@@ -46,6 +48,7 @@ function Login()
 
     const responseGoogle = async(response:any) =>
     {
+        console.log(response)
         let id_token = response.tokenObj.id_token
         let loginDetails = {idToken : id_token }
 

@@ -9,6 +9,7 @@ import { Button } from "@mui/material";
 import { Grid } from "@mui/material";
 import history from "../../../routes/history";
 import { post } from "../../../utils/http/httpMethods";
+import { Toast } from "../../../utils/toastUtil";
 
 function SignUp() 
 {
@@ -20,19 +21,24 @@ function SignUp()
     const handleSignUp = async() =>
     {   
         
-        let temp = fname +" "+ lname
+        let temp:any = fname +" "+ lname
         // const {fname,lname,...rest} = Obj
         Obj = {...Obj,name:temp}
         setObj(Obj)
 
         return post("http://localhost:8080/auth/register",Obj)
-        .then((res)=>
+        .then((res:any)=>
                     {   
                         console.log(res)
+                        Toast.success('Sign Up successful.......')
                         history.push("/auth/login")
                         window.location.reload()
                     }
+            ).catch((error)=>
+            Toast.error(
+                error.message || 'Error occurred while validating credentials!'
             )
+        )
     }
     // console.log(Obj)
     

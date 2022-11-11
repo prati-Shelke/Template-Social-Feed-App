@@ -4,6 +4,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { Box } from '@mui/system'
 import "../../../components/navbar/Navbar.scss";
 import { post } from '../../../utils/http/httpMethods';
+import { Toast } from '../../../utils/toastUtil';
 
 const ChangePassword = ({ChangePasswordOpen,setChangePasswordOpen}:any) =>
 {
@@ -11,10 +12,18 @@ const ChangePassword = ({ChangePasswordOpen,setChangePasswordOpen}:any) =>
 
     const handleChangePassword = async() =>
     {
-        let resp = await post(`http://localhost:8080/auth/change-password`,Obj)
+        let resp = post(`http://localhost:8080/auth/change-password`,Obj).then((res:any)=>
+        {   
+            Toast.success('password changed successfully now you should login with changed password.......')
+            setChangePasswordOpen(false)
+        }
+        ).catch((error)=>
+            Toast.error(
+                error.message || 'Error occurred !!!'
+            )
+        )
         console.log(resp)
-        setChangePasswordOpen(false)
-        
+    
     }
 
     return (

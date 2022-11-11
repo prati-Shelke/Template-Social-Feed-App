@@ -8,6 +8,7 @@ import Card from '@mui/material/Card';
 import { Button } from "@mui/material";
 import history from "../../../routes/history";
 import { post } from "../../../utils/http/httpMethods";
+import { Toast } from "../../../utils/toastUtil";
 
 function ForgotPassword() 
 {
@@ -22,9 +23,14 @@ function ForgotPassword()
                     {   
                         console.log("Email is sent",res)
                         localStorage.setItem('resetPasswordToken',JSON.stringify(res?.token))
+                        Toast.success('Email is sent to your regestered email.......')
                         history.push("/auth/login")
                         window.location.reload()
                     }
+            ).catch((error)=>
+                Toast.error(
+                    error.message || 'Error occurred !!!'
+                )
             )
     }
     

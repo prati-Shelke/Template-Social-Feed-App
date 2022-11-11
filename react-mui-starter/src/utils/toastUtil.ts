@@ -1,20 +1,24 @@
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faTriangleExclamation,faCheck} from '@fortawesome/free-solid-svg-icons'
+toast.configure()
 
-/*
- * Custom methods for showing toasters
- */
-export function showErrorToast(message: string) {
-  toast.error(message);
+export const Toast = {
+    success : (msg:any) =>
+    {
+        toast.success(msg ,
+            { position: toast.POSITION.TOP_RIGHT, autoClose: 1500 , theme: "colored",hideProgressBar:true})
+    },
+    error : (msg:any) =>
+    {
+        toast.error(msg ,
+            { position: toast.POSITION.TOP_RIGHT, autoClose: 1500 , theme: "colored",hideProgressBar:true})
+    },
+    warn : (msg:any) =>
+    {
+        toast.warn(msg ,
+            { position: toast.POSITION.TOP_RIGHT, autoClose: 1500 , theme: "colored",hideProgressBar:true})
+    }
 }
 
-export function showSuccessToast(message: string) {
-  toast.success(message);
-}
-
-export function showWarningToast(message: string) {
-  toast.warn(message);
-}
-
-export function showInfoToast(message: string) {
-  toast.info(message);
-}

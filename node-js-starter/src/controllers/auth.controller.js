@@ -55,6 +55,7 @@ const login = catchAsync(async (req, res) => {
 
 const googleLogin = catchAsync(async (req, res) => 
 {
+  console.log("first")
   const user = await authService.loginWithGoogle(req.body);
   console.log("google user", user);
   const { token, expires } = await tokenService.generateAuthTokens(user);

@@ -3,8 +3,7 @@ import { Suspense } from "react";
 import { AppLoader } from "./components/app-loader";
 import { AppNavigator } from "./components/app-navigator";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (

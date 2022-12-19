@@ -46,23 +46,23 @@ function Login()
     };
     
 
-    const responseGoogle = async(response:any) =>
-    {
-        console.log(response)
-        let id_token = response.tokenObj.id_token
-        let loginDetails = {idToken : id_token }
+    // const responseGoogle = async(response:any) =>
+    // {
+    //     console.log(response)
+    //     let id_token = response.tokenObj.id_token
+    //     let loginDetails = {idToken : id_token }
 
-        try {
-            const data = await post('/auth/google',loginDetails)
-            console.log(data);
+    //     try {
+    //         const data = await post('/auth/google',loginDetails)
+    //         console.log(data);
 
-            // localStorage.setItem('googleToken' , JSON.stringify(data.token))
-            history.push('/home')
-        } 
-        catch (err:any) {
-            console.log(`Error: ${err.message}`);
-        }
-    }
+    //         // localStorage.setItem('googleToken' , JSON.stringify(data.token))
+    //         history.push('/home')
+    //     } 
+    //     catch (err:any) {
+    //         console.log(`Error: ${err.message}`);
+    //     }
+    // }
 
     return (
         <ThemeProvider theme={theme}>
@@ -126,7 +126,7 @@ function Login()
                                     </Grid>
                                 </Grid>
 
-                                <Divider sx={{fontSize:'14px',padding:"10px"}}>
+                                {/* <Divider sx={{fontSize:'14px',padding:"10px"}}>
                                     <p style={{color: "#637381"}}> OR </p>
                                 </Divider>
 
@@ -138,7 +138,7 @@ function Login()
                                         onFailure = {responseGoogle}
                                         cookiePolicy = {'single_host_origin'}                
                                     />
-                                </Grid> 
+                                </Grid>  */}
                             </Box>
                         </Box>
                 </Card>

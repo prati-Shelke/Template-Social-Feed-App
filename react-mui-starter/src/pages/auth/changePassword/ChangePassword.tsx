@@ -23,7 +23,6 @@ const ChangePassword = ({ChangePasswordOpen,setChangePasswordOpen}:any) =>
             )
         )
         console.log(resp)
-    
     }
 
     return (

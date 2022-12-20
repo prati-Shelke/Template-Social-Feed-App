@@ -14,6 +14,7 @@ function UploadPost({UploadPostOpen,setUploadPostOpen,setcurrentTab}:any)
 
     const handleUpload = (files:any) =>
     {
+     
         for(let i=0;i<files.length;i++)
         {
             

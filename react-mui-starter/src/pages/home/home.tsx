@@ -59,7 +59,7 @@ function Home()
             }
         )
     }
-
+    console.log(Url)
 
     //------------------------------------FOR GETTING ALL THE USERS-------------------------------
     const fetchUser = async() =>
@@ -196,7 +196,7 @@ function Home()
                             user._id === post.createdBy &&
                             (
                                 <div key={user._id} style={{display:'flex'}}>
-                                    <p style={{fontSize:'14px',fontWeight:600}}> {user.name} :  </p> &nbsp;
+                                    <p style={{fontSize:'14px',fontWeight:600}}> {user.name}:  </p> &nbsp;
                                     <p style={{fontSize:'14px',fontWeight:400}}> {post.caption}</p>
                                 </div>
                             ))}
